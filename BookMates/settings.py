@@ -61,7 +61,9 @@ ROOT_URLCONF = 'BookMates.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'Templates'],
+        'DIRS': [
+            BASE_DIR / 'Templates'
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
