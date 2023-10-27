@@ -42,6 +42,10 @@ def get_books_json(request):
     buku_item = Buku.objects.all()
     return HttpResponse(serializers.serialize('json', buku_item))
 
+def get_books_json_id(request, id):
+    buku_item = Buku.objects.filter(pk=id)
+    return HttpResponse(serializers.serialize('json', buku_item))
+
 def update_book(request):
     bookId = request.POST.get("bookId")
     book = Buku.objects.get(id=bookId)
