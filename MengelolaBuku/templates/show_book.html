@@ -43,7 +43,6 @@ body{
 }
 
 .card{
-    float: left;
     margin-top: 20px;
     margin-bottom: 20px;
     margin-left: 40px;
@@ -75,7 +74,6 @@ body{
 }
 
 
-
 #book-cover{
     width: 180px;
     height: 264px;
@@ -98,7 +96,7 @@ body{
     border: none;
 }
 
-.edit-btn{
+.details-btn{
     background-color: #45425A;
     font-family: 'Kavoon';
     font-weight: 300;
@@ -106,13 +104,53 @@ body{
     color: #FFFFFF;
     margin-left: 50px;
     width: 106px;
+    border-color: #45425A;
+}
+
+#header-modal{
+    background-color: #FF6B6C;
+    font-family: 'Kavoon';
+    font-weight: 300;
+    font-size: 20px;
+    color: #45425A;
+}
+
+.modal-body{
+    background-color: #F3E8EA;
+}
+
+.form-control{
+    background-color: #E2D1D4;
+    border-color: #E2D1D4;
+}
+
+.modal-footer{
+    background-color: #F3E8EA;
+}
+
+#button_add{
+    background-color: #45425A;
+    font-family: 'Kavoon';
+    font-weight: 400;
+    font-size: 16px;
+    color: #FFFFFF;
+    border-color: #45425A;
+}
+
+.col-form-label{
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 19px;
+    color: #000000;
 }
 </style>
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header" id="header-modal">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Add Book</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -146,14 +184,13 @@ body{
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="button_add" data-bs-dismiss="modal">Add Product</button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -205,17 +242,42 @@ body{
     </div>
 </div>
 
-    <div class="wrapper-title">
-        <h1 id="title">My Books</h1>
-        <button id="add-book-button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Add New Book</button>
+<div class="modal" tabindex="-1" id="detailModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header" id="header-modal">
+          <h5 class="modal-title">Book Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="hideModal()"></button>
+        </div>
+        <div class="modal-body" id="details-modal-body">
+          <p>Modal body text goes here.</p>
+        </div>
+      </div>
     </div>
-    <br>
-    <div id="wrapper-card"></div>
+</div>
+
+<div class="wrapper-title">
+    <h1 id="title">My Books</h1>
+    <button id="add-book-button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Add New Book</button>
+</div>
+<br>
+<div id="wrapper-card" class="grid grid-cols-4 gap-4"></div>
 
 
 <script>
+    // $(document).ready(function() {
+    //     $('#details-button').on('click', function() {
+    //         const objectId = $(this).closest('.card').data('object-id');
+    //         getBooksId(objectId);
+    //     })
+    // });
+
     async function getBooks() {
         return fetch("{% url 'MengelolaBuku:get_books_json' %}").then((res) => res.json())
+    }
+
+    async function getBooksId(objectId) {
+        return fetch(`get-books-json-id/${objectId}`).then((res) => res.json())
     }
 
     async function refreshBooks() {
@@ -225,9 +287,8 @@ body{
         products.forEach((books) => {
             var book_rating = Math.round(books.fields.rating)
             var rating_kosong = 5 - book_rating
-            //var url_image = "https://marketplace.canva.com/EAFfV74NxCg/1/0/1003w/canva-colorful-blue-illustration-beach-children%27s-book-cover-eTSt5e-cETQ.jpg"
             var url_image = books.fields.image_url
-            htmlString += `<div id="book-card" class="card" style="width: 35rem;">
+            htmlString += `<div id="book-card" class="card col-6" style="width: 35rem;">
             <div class="card-body">
             <table>    
             <tr>
@@ -244,20 +305,15 @@ body{
             </tr>
             <tr>
               <td colspan="2">  
-              <div class="ratings">
-                {% for star in rating %}
-                    <i class="fa fa-star rating-color"></i>
-                {% endfor %}
-                {% for star in rating_kosong %}
-                    <i class="fa fa-star"></i>
-                {% endfor %}
+              <div class="ratings d-flex">
+                <p class="card-text">${books.fields.rating}</p>
+                <i class="fa fa-star rating-color"></i>
+                <p class="card-text" style="margin-left: 20px;">(${books.fields.num_of_rating})</p>
               </div>
               </td>
             </tr>  
             <tr>
-            <td><button class="btn btn-primary edit-btn" onclick="openEditModal('${books.fields.id}', 
-                '${books.fields.judul}', '${books.fields.author}', '${books.fields.min_age}', 
-                ${books.fields.max_age}, ${books.fields.rating}, ${books.fields.num_of_rating}, ${books.fields.description})">Edit</button></td>
+            <td><button class="btn btn-primary details-btn" id="details-button" onclick="showDetails(${books.pk})">Details</button></td>
             <td><a href="remove_all/{{item.pk}}/"><button class="btn remove-btn">🗑️</button></a></td>
             </tr>
             </table>
@@ -280,6 +336,50 @@ body{
         return false
     }
     document.getElementById("button_add").onclick = addBook
+
+    async function showDetails(objectId){
+        document.getElementById("details-modal-body").innerHTML = ""
+        let htmlString = ""
+        var books = await getBooksId(objectId)
+        books = books[0]
+        console.log(books)
+        var url_image = books.fields.image_url
+        htmlString += `
+        <table>    
+            <tr>
+              <td rowspan="5"><img id="book-cover" src="${url_image}" alt="Book Cover"></td>
+              <td colspan="2" id="title-wrapper"><h5 class="card-title">${books.fields.judul}</h5></td>
+            </tr>
+            <tr>
+              <td><p class="card-text"><b>Author</b></p></td>
+              <td><p class="card-text">${books.fields.author}</p></td>
+            </tr>
+            <tr>
+              <td>
+              <p class="card-text"><b>Age</b></p></td>
+              <td><p class="card-text">${books.fields.min_age}-${books.fields.max_age} years</p></td>
+            </tr>
+            <tr>
+                <td colspan="2><p class="card-text">${books.fields.desc}</p></td>
+            </tr>
+            <tr>
+              <td colspan="2">  
+              <div class="ratings d-flex">
+                <p class="card-text">${books.fields.rating}</p>
+                <i class="fa fa-star rating-color"></i>
+                <p class="card-text" style="margin-left: 20px;">(${books.fields.num_of_rating})</p>
+              </div>
+              </td>
+            </tr>
+        </table>`
+        document.getElementById("details-modal-body").innerHTML = htmlString
+        document.getElementById('detailModal').style.display = "block";
+
+    }
+
+    function hideModal(){
+        document.getElementById('detailModal').style.display = 'none';
+    }
 
     function updateValueDisplay() {
         var rangeInput = document.getElementById('customRange3');
@@ -309,7 +409,7 @@ body{
         document.getElementById('edit-desc').value = desc;
 
         // Open the modal
-        $('#editModal').modal('show');
+        document.getElementById('#editModal').showPopover;
     }
 
     function submitEditForm() {
@@ -331,7 +431,7 @@ body{
         var originalRating = document.getElementById('original-rating').value;
         var originalNumRating = document.getElementById('original-num-rating').value;
         var originalDesc = document.getElementById('original-desc').value;
-        // Get other original values as needed
+
 
         // Check if changes have been made
         if (newTitle !== originalTitle || newAuthor !== originalAuthor || newMinimal_age !== originalMinAge || newAuthor !== originalAuthor || 
