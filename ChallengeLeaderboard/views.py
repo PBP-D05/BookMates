@@ -5,9 +5,6 @@ from django.http import Http404
 from . import models
 
 def leaderboard(request):
-    context = {
-        'komunitas': models.Challenge.objects.get()
-    }
     return render(request, 'leaderboard.html')
 
 def challenge(request, name: str):
