@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'MengelolaBuku',
     'ChallengeLeaderboard',
     'Dashboard',
-    'Komunitas',
     'LoginRegister',
     'SearchKatalog',
 ]
