@@ -1,0 +1,98 @@
+{% extends 'sidebar.html' %}
+{% load static %}
+
+{% block title %}Custom Title{% endblock %}
+
+{% block content %}
+<div class="container">
+    <img src="../static/assets/user.png" alt="" style="height: 50px; width: 45px;">
+    <span class="welcoming" style="font-family: 'Kavoon';">Hello, {{ name }} !</span>
+    
+    <a href="#" style="text-decoration: none; float: right; color: #45425A">
+        <i class="fa-solid fa-magnifying-glass" style="float: right; margin-right: 50px;"></i>
+        Search Books
+            
+    </a>
+
+    <!-- <div class="input-group rounded" style="z-index: -1; margin-bottom: 30px;">
+        <input type="search" class="form-control rounded" placeholder="Search your community" aria-label="Search" aria-describedby="search-addon" />
+        <span class="input-group-text border-0" id="search-addon">
+          <i class="fas fa-search"></i>
+        </span>
+    </div> -->
+
+    <form onsubmit="return false;" id="sort">
+        {% csrf_token %}
+        <div class="input-group" style="margin-bottom: 10px; position: relative; z-index: 0;">
+            <select class="custom-select" name="order_by" id="inputGroupSelect04">
+                <option selected>Order by</option>
+                <option value="1">Sort A-Z</option>
+                <option value="2">Sort Z-A</option>
+            </select>
+
+            <div class="input-group-append">
+                <button id="button_submit" class="btn btn-outline-secondary" type="submit">Sort</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="col-md-3 mb-3">
+        <div class="card" style="border-radius: 10px; z-index: -1; background-color: #FF6B6C;">
+            <div class="card-body">
+                <div class="r1" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h5 class="card-title" style="font-size: 20px; font-family: 'Kavoon';">Nama Community</h5>
+                    <a href="#" style="text-decoration: none; color: #45425A">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </a>
+                    
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+<script>
+    async function handleSubmit(){
+        console.log("clicked")
+        const form = document.querySelector('#sort');
+        const selectedValue = document.getElementById('inputGroupSelected04').value;
+        let order_by;
+
+        if (selectedValue === '1'){
+            order_by = 'ascending';
+        } else if (selectedValue === '2'){
+            order_by = 'descending';
+        }
+
+        const result = await fetch(`/ajax/`, {method: 'POST', body: newFormData(form)});
+
+        console.log(result)
+
+        const sorted = await result.json();
+
+        let htmlString = "";
+
+        sorted.forEach((community) => {
+            htmlString += `<div class="col-md-3 mb-3">
+        <div class="card" style="border-radius: 10px; z-index: -1; background-color: #FF6B6C;">
+            <div class="card-body">
+                <div class="r1" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h5 class="card-title" style="font-size: 20px; font-family: 'Kavoon';">Nama Community</h5>
+                    <a href="#" style="text-decoration: none; color: #45425A">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </a>
+                    
+                </div>
+            </div>
+        </div>
+
+    </div>`;
+        });
+        
+    document.getElementById("card").innerHTML=htmlString;
+    }
+</script>
+{% endblock %}
