@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'MengelolaBuku',
     'ChallengeLeaderboard',
+    'Komunitas',
     'Dashboard',
     'LoginRegister',
     'SearchKatalog',

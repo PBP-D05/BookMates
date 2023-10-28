@@ -24,10 +24,10 @@
     <form onsubmit="return false;" id="sort">
         {% csrf_token %}
         <div class="input-group" style="margin-bottom: 10px; position: relative; z-index: 0;">
-            <select class="custom-select" name="order_by" id="inputGroupSelect04">
+            <select class="custom-select" name="order_by" id="inputGroupSelected04">
                 <option selected>Order by</option>
-                <option value="1">Sort A-Z</option>
-                <option value="2">Sort Z-A</option>
+                <option value='1'>Sort A-Z</option>
+                <option value='2'>Sort Z-A</option>
             </select>
 
             <div class="input-group-append">
@@ -35,20 +35,23 @@
             </div>
         </div>
     </form>
-
-    <div class="col-md-3 mb-3">
-        <div class="card" style="border-radius: 10px; z-index: -1; background-color: #FF6B6C;">
-            <div class="card-body">
-                <div class="r1" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <h5 class="card-title" style="font-size: 20px; font-family: 'Kavoon';">Nama Community</h5>
-                    <a href="#" style="text-decoration: none; color: #45425A">
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    </a>
-                    
+    <div id="kartukomunitas">
+        {% for komunitas in community %}
+        <div class="col-md-3 mb-3">
+            <div class="card" style="border-radius: 10px; z-index: -1; background-color: #FF6B6C;">
+                <div class="card-body">
+                    <div class="r1" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h5 class="card-title" style="font-size: 20px; font-family: 'Kavoon';">{{komunitas.name}}</h5>
+                        <a href="#" style="text-decoration: none; color: #45425A">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </a>
+                        
+                    </div>
                 </div>
             </div>
+    
         </div>
-
+        {%endfor%}
     </div>
 </div>
 
@@ -59,6 +62,7 @@
         console.log("clicked")
         const form = document.querySelector('#sort');
         const selectedValue = document.getElementById('inputGroupSelected04').value;
+        console.log(selectedValue)
         let order_by;
 
         if (selectedValue === '1'){
@@ -66,21 +70,20 @@
         } else if (selectedValue === '2'){
             order_by = 'descending';
         }
+        const namePk = '{{ name.pk }}';
+        const result = await fetch(`/sortajax/`, {method: 'POST', body: new FormData(form)});
 
-        const result = await fetch(`/ajax/`, {method: 'POST', body: newFormData(form)});
-
-        console.log(result)
-
+ 
         const sorted = await result.json();
 
         let htmlString = "";
-
+        console.log(sorted)
         sorted.forEach((community) => {
             htmlString += `<div class="col-md-3 mb-3">
         <div class="card" style="border-radius: 10px; z-index: -1; background-color: #FF6B6C;">
             <div class="card-body">
                 <div class="r1" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <h5 class="card-title" style="font-size: 20px; font-family: 'Kavoon';">Nama Community</h5>
+                    <h5 class="card-title" style="font-size: 20px; font-family: 'Kavoon';">${community.fields.name}</h5>
                     <a href="#" style="text-decoration: none; color: #45425A">
                         <i class="fa-solid fa-arrow-up-right-from-square"></i>
                     </a>
@@ -92,7 +95,8 @@
     </div>`;
         });
         
-    document.getElementById("card").innerHTML=htmlString;
+    document.getElementById("kartukomunitas").innerHTML=htmlString;
     }
+    document.getElementById("button_submit").onclick = handleSubmit
 </script>
 {% endblock %}

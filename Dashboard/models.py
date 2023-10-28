@@ -1,3 +1,4 @@
 from django.db import models
-from MengelolaBuku import Pengguna
+from Komunitas.models import Community
+from MengelolaBuku.models import Pengguna
 # Create your models here.
