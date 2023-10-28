@@ -7,9 +7,19 @@ import json
 import datetime
 
 from . import models
-from MengelolaBuku.models import Pengguna, Buku
+from MengelolaBuku.models import Pengguna, Buku, User
 
 USERNAME = 'root'
+
+@csrf_exempt
+def get_username(request, pk: int):
+    user = Pengguna.objects.get(pk=pk)
+    return JsonResponse(json.dumps({'username': user.user.username}), safe=False, status=200)
+
+@csrf_exempt
+def get_current_username(request):
+    user = request.user
+    return JsonResponse(json.dumps({'username': user.username}), safe=False, status=200)
 
 # NEW ENDPOINT 
 def get_ranking(request):
@@ -17,35 +27,43 @@ def get_ranking(request):
         Return JSON list contains Nama, banyak yang direview, status, banyak bintang total
     """
     all_pengguna = Pengguna.objects.all()
-    return HttpResponse(serializers.serialize('json', all_pengguna), content_type='application/json')
+    return JsonResponse(serializers.serialize('json', all_pengguna), safe=False)
 
-
+@csrf_exempt
 def get_reviews(request, book_pk:str):
     """
         Return JSON list of reviews
     """
     buku = Buku.objects.get(pk=book_pk)
     all_reviews = models.Reviews.objects.filter(buku=buku)
-    return HttpResponse(serializers.serialize('json', all_reviews), content_type='application/json')
+    return JsonResponse(serializers.serialize('json', all_reviews), safe=False)
 
+@csrf_exempt
 def post_reviews(request):
     """
         Body:
-            name: name of a book
+            pk: pk a book
             text: review's  text
             rating: int [1, 5] of rating
     """
     try:
-        name = request.POST.get('name')
-        text = request.POST.get('text')
-        rating = request.POST.get('rating')
-        user = request.user
+        data = json.loads(request.body)
 
-        buku = Buku.objects.get(judul=name)
+        pk = int(data['pk'])
+        text = data['text']
+        rating = float(data['rating'])
+        user = Pengguna.objects.get(user=request.user)
+
+        buku = Buku.objects.get(pk=pk)
         new_review = models.Reviews.objects.create(buku=buku, user=user, text=text, rating=rating).save()
-        return JsonResponse({'status': 'ok'})
+
+        user.banyak_bintang += rating
+        user.banyak_review += 1
+        user.save(update_fields=['banyak_bintang', 'banyak_review'])
+        return JsonResponse({'status': 'ok'}, status=200)
     except ValueError as e:
-        return JsonResponse({'status': 'error'})
+        print(e)
+        return JsonResponse({'status': 'error'}, status=401)
 
 ########################
 

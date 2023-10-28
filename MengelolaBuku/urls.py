@@ -11,7 +11,7 @@ urlpatterns = [
     path('add-book', add_book, name='add_book'),
     path('get-books-json-id/<int:id>/', get_books_json_id, name='get_books_json_id'),
     path('remove_book/<int:id>/', remove_book, name='remove_book'),
-    path('add-book-flutter', add_book_flutter, name='add_book-flutter'),
-    path('show-book-flutter', show_book_flutter, name='show_book-flutter'),
+    path('add-book-flutter/', add_book_flutter, name='add_book-flutter'),
+    path('show-book-flutter/', show_book_flutter, name='show_book-flutter'),
     path('remove-book-flutter/', remove_book_flutter, name='remove_book_flutter')
 ]

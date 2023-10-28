@@ -6,3 +6,4 @@ requests
 urllib3
 cloudinary
 django-environ
+django-cors-headers
