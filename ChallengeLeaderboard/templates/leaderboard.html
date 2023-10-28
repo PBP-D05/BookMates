@@ -9,46 +9,106 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <style>
         body {
-            background-color: #F3E8EA;
+            background-image: url({% static "leaderboard_background.png" %});
+            background-repeat: no-repeat;   
+            background-size: cover;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="my-4">Leaderboard</h1>
-        <div style="display: flex;">
+    <div class="m-4 justify-content-center">
+        <div class="container text-center my-4">
+            <h1 class="fw-bold">Leaderboard</h1>
+            <p class="my-4">Selamat datang di halaman Leaderboard! Di sini, kamu dapat melihat peringkat kamu pada komunitas kamu berdasarkan nilai yang diperoleh dari tantangan. Leaderboard dirancang untuk mendorong semangat kompetitif yang sehat dan memotivasi siswa untuk terus belajar dan berkembang. Mari kita lihat siapa yang berada di puncak!</p>
+            <div class="container" style="width: 30%">
+                <img src="{% static "medals.png" %}" class="img-fluid"/>
+            </div>
+        </div>
+        <div class="container align-items-center w-75" style="display: flex;">
             <div class="form-floating w-75">
                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                     <option selected> -- </option>
-                    {% comment %} TODO: Add Wifi {% endcomment %}
+                    {% comment %} TODO: Add Data {% endcomment %}
                     <option value="1">One</option>
                 </select>
                 <label for="floatingSelect">Lihat Komunitas</label>
             </div>
-            <h3 class="mx-3 text-center">Prof Cyan</h3>
+            <div class="form-floating w-25 ms-4">
+                <select class="form-select" id="floatingSelect" aria-label="Floating label select example" disabled>
+                    <option selected> Prof Cyan </option>
+                </select>
+                <label for="floatingSelect">Guru</label>
+            </div>
         </div>
-        <table class="my-4 table text-center">
-            <thead>
-                <tr>
-                    <th scope="col">Rank</th>
-                    <th scope="col">Nama</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Point Total</th>
-                    <th scope="col">Point Bulan Ini</th>
-                    <th scope="col">Tugas Diselesaikan</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>John Doe</td>
-                    <td>zzxx@yahoo.com</td>
-                    <td>69</td>
-                    <td>29</td>
-                    <td>2</td>
-                </tr>                
-            </tbody>
-        </table>
+        <div class="container text-center my-3">
+            <h5 class="fw-bold">Peringkat Kamu</h5>
+        </div>
+        <div class="container align-items-center w-75 my-4">
+            <table class="table text-center align-items-center rounded-3 overflow-hidden">
+                <thead></thead>
+                <tbody class="text-center">
+                    <tr>
+                        <td class="px-4">1</td>
+                        <td class="px-4">John Doe</td>
+                        <td class="text-end px-4">
+                            <img src="{% static "point.png" %}" width="3%">
+                            200
+                        </td>
+                    </tr>                
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="container text-center my-4">
+            <h5 class="fw-bold">Top 10 Terbaik</h5>
+        </div>
+        <div class="text-center rounded-3 overflow-hidden">
+            <div class="container align-items-center w-75 my-2">
+                <table class="table text-center align-items-center rounded-3 overflow-hidden">
+                    <thead></thead>
+                    <tbody class="text-center">
+                        <tr>
+                            <td class="px-4">1</td>
+                            <td class="px-4">John Doe</td>
+                            <td class="text-end px-4">
+                                <img src="{% static "point.png" %}" width="3%">
+                                200
+                            </td>
+                        </tr>                
+                    </tbody>
+                </table>
+            </div>
+            <div class="container align-items-center w-75 my-2">
+                <table class="table text-center align-items-center rounded-3 overflow-hidden">
+                    <thead></thead>
+                    <tbody class="text-center">
+                        <tr>
+                            <td class="px-4">1</td>
+                            <td class="px-4">John Doe</td>
+                            <td class="text-end px-4">
+                                <img src="{% static "point.png" %}" width="3%">
+                                200
+                            </td>
+                        </tr>                
+                    </tbody>
+                </table>
+            </div>
+            <div class="container align-items-center w-75 my-2">
+                <table class="table text-center align-items-center rounded-3 overflow-hidden">
+                    <thead></thead>
+                    <tbody class="text-center">
+                        <tr>
+                            <td class="px-4">1</td>
+                            <td class="px-4">John Doe</td>
+                            <td class="text-end px-4">
+                                <img src="{% static "point.png" %}" width="3%">
+                                200
+                            </td>
+                        </tr>                
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
