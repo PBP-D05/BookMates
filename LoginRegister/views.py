@@ -9,6 +9,7 @@ from django.urls import reverse
 from .models import UserProfile
 from django.http import HttpResponse
 from django.core import serializers
+from Dashboard.views import show_main
 
 # Create your views here.
 def show_xml(request):
@@ -32,7 +33,7 @@ def show_home(request):
 
 def user_register(request):
     if request.method == "POST":
-        form = RegistrationForm(request.POST)
+        form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'Your account has been successfully created!')
@@ -54,7 +55,7 @@ def user_login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            response = HttpResponseRedirect(reverse("Dashboard:show_main")) 
+            response = HttpResponseRedirect("Dashboard:show_main")
             return response
         else:
             messages.info(request, 'Sorry, incorrect username or password. Please try again.')

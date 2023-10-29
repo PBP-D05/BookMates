@@ -85,7 +85,7 @@ def post_nilai(request):
     new_point = request.POST.get('value')
     challenge_name = request.POST.get('challenge_name')
 
-
+    print(f'EDIT NILAI REQUEST on {username}')
     user = models.User.objects.get(username=username)
     pengguna = Pengguna.objects.get(user=user)
     reply = models.Challenge(name=challenge_name).reply
