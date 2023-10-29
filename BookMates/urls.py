@@ -15,8 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
+from LoginRegister import views
 urlpatterns = [
+    path('', include('LoginRegister.urls')),
+    path('', views.show_home, name='home'),
     path('admin/', admin.site.urls),
     path('editbuku/', include('MengelolaBuku.urls')),
     path('', include('ChallengeLeaderboard.urls'))
