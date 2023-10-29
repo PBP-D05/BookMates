@@ -31,9 +31,9 @@ def perform_search(request):
                     min_age, max_age = 0, int(keyword)
                     results = Buku.objects.filter(Q(max_age__lte=max_age))
 
-                print("KEY:", min_age, ' ', max_age)
-                for res in results:
-                    print(res.min_age, res.max_age, res.judul)
+                # print("KEY:", min_age, ' ', max_age)
+                # for res in results:
+                #     print(res.min_age, res.max_age, res.judul)
             elif category == 'title':
                 # Lakukan pencarian berdasarkan judul
                 results = Buku.objects.filter(judul__icontains=keyword)
