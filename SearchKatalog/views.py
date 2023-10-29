@@ -21,8 +21,13 @@ def perform_search(request):
         if category and keyword:
             # Lakukan logika pencarian berdasarkan kategori yang dipilih
             if category == 'age':
-                # Lakukan pencarian berdasarkan rentang usia
-                min_age, max_age = map(int, keyword.split('-'))
+                if '-' in keyword:
+                    # Lakukan pencarian berdasarkan rentang usia
+                    min_age, max_age = map(int, keyword.split('-'))
+                else:
+                    # Lakukan pencarian pada rentang yang terdapat umur 'keyword' di dalamnya
+                    min_age, max_age = int(keyword), 100
+                    
                 results = Buku.objects.filter(min_age__lte=max_age, max_age__gte=min_age)
             elif category == 'title':
                 # Lakukan pencarian berdasarkan judul
@@ -45,7 +50,7 @@ def perform_search(request):
                     'num_of_rating': book.num_of_rating,
                     'min_age': book.min_age,
                     'max_age': book.max_age,
-                    'image_url': book.image_url.url if book.image_url else '',  # URL gambar jika ada, kosongkan jika tidak
+                    'image_url': book.image_url if book.image_url else '',  # URL gambar jika ada, kosongkan jika tidak
                     'desc': book.desc,
                 })
                 

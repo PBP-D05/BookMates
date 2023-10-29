@@ -63,12 +63,16 @@
 </div>
 
 <script>
+    var jQueryScript = document.createElement('script');
+    jQueryScript.setAttribute('src','https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js');
+    document.head.appendChild(jQueryScript);
+    
     function performSearch() {
         var category = document.getElementById("category").value;
         var keyword = document.getElementById("search").value;
 
         // Kirim permintaan pencarian ke server menggunakan AJAX
-        $.get(`/perform_search/?category=${category}&keyword=${keyword}`, function (data) {
+        $.get(`../perform_search/?category=${category}&keyword=${keyword}`, function (data) {
             var searchResults = data.books;
             var searchResultsContainer = document.getElementById("search-results");
             searchResultsContainer.innerHTML = '';
