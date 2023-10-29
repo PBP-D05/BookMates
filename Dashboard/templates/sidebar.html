@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter&family=Kavoon&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
+    <link href='//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css' rel='stylesheet'/>
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+
+
+    <title>{% block title %}Default Title{% endblock %}</title>
+</head>
+
+<input type="checkbox" id="check" checked>
+    <label for="check">
+      <i class="fas fa-bars" id="btn"></i>
+      <i class="fas fa-times" id="cancel"></i>
+    </label>
+
+<body style="background-color: #F3E8EA;">
+    <div class="container d-flex"></div>
+        <div class="sidebar" id="side_nav" style="background-color: #F8C537; width: 325px; padding: 24px; display: flex; box-sizing: border-box; flex-direction: row; min-height: 100vh; position: fixed; transition: all .5s ease;z-index: 1;">
+            <div class="header" style="font-size: 30px; font-weight: 500; text-align: center; line-height: 16px; user-select: none;">
+                <div class="list_item">
+                    <a href="#" style="text-decoration: none; color: #45425A">
+                        <img src="../static/assets/books-stack-of-three.png" alt="" class="icon" style="width: 50px; height: 50px;"/>
+                        <span class="title" style="margin-left: 15px;font-family: 'Kavoon';">BookMates</span>
+                    </a>
+                </div>
+
+                
+                <div class="illustration">
+                    <img src="../static/assets/ilustrasi.png" alt="" style="width: 210px; height: 180px; margin-bottom: 0px;">
+                </div>
+
+                <div class="main">
+                    <div class="list_options" style="display: flex; box-sizing: border-box; flex-direction: row; margin-top: 12px; padding-left: 10px; align-items: center; border-radius: 8px; box-sizing: border-box; padding-top: 10px; padding-bottom: 10px;">
+                        <a href="/dashboard/" style="text-decoration: none; color: #45425A; margin-top: 0px; margin-left: 10px;">
+                            <img src="../static/assets/logo_dashboard_edit.png" alt="" style="width: 23px; height: 2p3x; margin-left: 10px;">
+                            <span class="description" style="font-family: 'Inter'; margin-left: 18px; font-size: 16px;">Dashboard</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="main">
+                    <div class="list_options" style="display: flex; box-sizing: border-box; flex-direction: row; margin-top: 12px; padding-left: 10px; align-items: center; border-radius: 8px; box-sizing: border-box; padding-top: 10px; padding-bottom: 10px;">
+                        <a href="#" style="text-decoration: none; color: #45425A; margin-top: 0px; margin-left: 10px;">
+                            <img src="../static/assets/logo_community_edit.png" alt="" style="width: 23px; height: 2p3x; margin-left: 10px;">
+                            <span class="description" style="font-family: 'Inter'; margin-left: 18px; font-size: 16px;">Community</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="main">
+                    <div class="list_options" style="display: flex; box-sizing: border-box; flex-direction: row; margin-top: 12px; padding-left: 10px; align-items: center; border-radius: 8px; box-sizing: border-box; padding-top: 10px; padding-bottom: 10px;">
+                        <a href="{% url 'leaderboard' %}" style="text-decoration: none; color: #45425A; margin-top: 0px; margin-left: 10px;">
+                            <img src="../static/assets/logo_leaderboard_edit.png" alt="" style="width: 23px; height: 2p3x; margin-left: 10px;">
+                            <span class="description" style="font-family: 'Inter'; margin-left: 18px; font-size: 16px;">Leaderboard</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="main">
+                    <div class="list_options" style="display: flex; box-sizing: border-box; flex-direction: row; margin-top: 12px; padding-left: 10px; align-items: center; border-radius: 8px; box-sizing: border-box; padding-top: 10px; padding-bottom: 10px;">
+                        <a href="/searchbuku/search/" style="text-decoration: none; color: #45425A; margin-top: 0px; margin-left: 10px;">
+                            <img src="../static/assets/logo_search_edit.png" alt="" style="width: 23px; height: 2p3x; margin-left: 10px;">
+                            <span class="description" style="font-family: 'Inter'; margin-left: 18px; font-size: 16px;">Search</span>
+                        </a>
+                    </div>
+                </div>
+
+                <style>
+                    .list_options:hover{
+                        background-color: #60AB9A;
+                    }
+                </style>
+
+                
+            </div>
+
+
+        </div>
+
+    </div>
+
+    <section>
+        {% block content %}{% endblock %}
+    </section>
+
+
+    <style>
+        #check{
+        display: none;
+        }
+        label #btn,label #cancel{
+        position: absolute;
+        background: #0071a5;
+        border-radius: 3px;
+        cursor: pointer;
+        }
+        label #btn{
+        left: 325px;
+        top: 25px;
+        font-size: 35px;
+        color: white;
+        padding: 6px 12px;
+        opacity: 0;
+        pointer-events: none;
+        transition: all .5s;
+        }
+        label #cancel{
+        z-index: 1111;
+        left: 330px;
+        top: 30px;
+        font-size: 30px;
+        color: #0a5275;
+        padding: 4px 9px;
+        transition: all .5s ease;
+        }
+        #check:checked ~ .sidebar{
+        left: -325px;
+        z-index: 1;
+        }
+        #check:checked ~ label #btn{
+        left: 20px;
+        opacity: 1;
+        pointer-events: auto;
+        }
+        #check:checked ~ label #cancel{
+        left: -195px;
+        }
+        #check:checked ~ section{
+        margin-left: 0px;
+        }
+    </style>
+
+    <!-- <script>
+        window.onload = function () {
+        const checkBox = document.getElementById("check");
+        checkBox.checked = false;
+        };
+    </script> -->
+</body>
+
+
+</html>

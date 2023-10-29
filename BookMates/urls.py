@@ -21,5 +21,8 @@ urlpatterns = [
     path('', views.show_home, name='home'),
     path('admin/', admin.site.urls),
     path('editbuku/', include('MengelolaBuku.urls')),
-    path('', include('ChallengeLeaderboard.urls'))
+    path('searchbuku/', include('SearchKatalog.urls')),
+    path('challenge/', include('ChallengeLeaderboard.urls')),
+    path('',include('Dashboard.urls')),
+    path('',include('Komunitas.urls')),
 ]

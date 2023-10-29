@@ -54,7 +54,7 @@ def user_login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            response = HttpResponseRedirect(reverse("LoginRegister:show_home")) 
+            response = HttpResponseRedirect(reverse("Dashboard:show_main")) 
             return response
         else:
             messages.info(request, 'Sorry, incorrect username or password. Please try again.')
@@ -65,5 +65,4 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     response = HttpResponseRedirect(reverse('LoginRegister:show_home'))
-    response.delete_cookie('last_login')
     return response 
