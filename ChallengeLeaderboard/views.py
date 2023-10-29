@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound, HttpResponseBadRequest
 
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
@@ -23,6 +23,35 @@ def get_reply(request, challenge_name: str):
         dct.append(json.dumps({'user': reply.user.username, 'text': reply.text, 'datetime': reply.datetime.strftime("%B %d, %Y %H:%M"), 'point': reply.point}))
 
     return HttpResponse(dct, content_type='application/json')
+
+@csrf_exempt
+def post_nilai(request):
+    if request.method != 'POST' or request.POST.get('user') is None or request.POST.get('value') is None or request.POST.get('challenge_name') is None:
+        return HttpResponseBadRequest('Not a Valid request')
+    username = request.POST.get('user')
+    new_point = request.POST.get('value')
+    challenge_name = request.POST.get('challenge_name')
+
+
+    user = models.User.objects.get(username=username)
+    print("USER", user)
+    pengguna = Pengguna.objects.get(user=user)
+    print("PENGGUNA", pengguna)
+    print("CHALLENGE_NAME", challenge_name)
+    reply = models.Challenge(name=challenge_name).reply
+    print("REPLY", reply)
+    myReply = reply.get(user=user)
+    print("PENGGUNA", pengguna)
+
+    old_point = myReply.point
+    myReply.point = new_point
+    myReply.save(update_fields=['point'])
+
+    pengguna.point -= old_point
+    pengguna.point += int(new_point)
+    pengguna.save(update_fields=['point'])
+
+    return HttpResponse(f"Old Point {old_point}, New Point {myReply.point}, Pengguna Point {pengguna.point}")
 
 @csrf_exempt
 def post_reply(request, challenge_name: str, text: str):

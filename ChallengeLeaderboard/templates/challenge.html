@@ -69,17 +69,36 @@
             document.getElementById("details-modal-body").innerHTML = htmlString
             document.getElementById('detailModal').style.display = "block";
         }
+        async function onNilaiChange(new_value, user, challenge_name){
+            if (new_value < 0) {
+                new_value = 0
+                alert("Nilai Tidak Boleh Negatif!")
+            }else if(new_value > {{ point| safe }}){
+                new_value = {{ point| safe }}
+                alert("Nilai Melebihi Point Challenge Maksimal!")
+            }
+            const data = new FormData();
+            data.append('user', user);
+            data.append('value', new_value);
+            data.append('challenge_name', challenge_name);
+
+            document.getElementById(`pointInput-${user}`).value = new_value
+
+            fetch("{% url 'ChallengeLeaderboard:post_nilai' %}", {
+                method: 'POST',
+                body: data,
+            })
+        }
         async function showReply(){
             data = await fetch_reply()
             text = document.getElementById("reply").innerHTML
             {% if isguru %}
-                console.log(data.point)
                 text += `<div class="m-4 p-3 rounded" style="background-color: #F8DCE2;">
                     <div class="d-flex justify-content-between align-items-center">
                         <h4>${data.user}</h4>
                         <form class="form-floating">
-                            <input type="number" class="form-control" id="floatingInputValue" value="${data.point}">
-                            <label for="floatingInputValue">Nilai ${data.user}</label>
+                            <input type="number" class="form-control" id="pointInput-${data.user}" value="${data.point}">
+                            <label for="pointInput">Nilai ${data.user}</label>
                         </form>
                     </div>
                     <p>${data.text}</p>
@@ -91,6 +110,9 @@
                 </div>`
             {% endif %}
             document.getElementById("reply").innerHTML = text
+            document.getElementById(`pointInput-${data.user}`).addEventListener('change',
+                (value) => onNilaiChange(value.target.value, data.user, "{{name}}")
+            )
         }
         window.onload = async function(e){ 
             showReply()
