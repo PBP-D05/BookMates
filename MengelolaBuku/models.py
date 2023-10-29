@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 # Create your models here.
 class Pengguna(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    isGuru = models.BooleanField()
+    isGuru = models.BooleanField(default=True)
     point = models.IntegerField(default=0)
 
 class Buku(models.Model):
