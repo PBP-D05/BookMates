@@ -2,38 +2,135 @@
 
 {% block content %}
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 <style>
     body {
-        font-family: Arial, sans-serif;
+        background: url('bg1.png');
+        background-size: cover;
+        background-color: #F3E8EA;
+        max-width: 1096px;
+        margin: 0 auto;
+        font-family: 'Inter', sans-serif;
+        color: #000000;
+    }
+
+    label[for="category"] {
+        font-family: 'Indie Flower', cursive; /* Mengubah font family */
+        font-size: 18px; /* Mengubah ukuran font */
+        color: #d85252; /* Mengubah warna teks */
+        margin-right: 10px; /* Menambah margin kanan agar terpisah dari elemen berikutnya */
+    }
+
+    .wrapper-title {
+        margin: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #title {
+        font-family: 'Kavoon', cursive;
+        font-size: 40px;
+        font-weight: 400;
+        color: #45425A;
+        max-width: 50%;
     }
 
     .container {
-        max-width: 800px;
         margin: 0 auto;
         padding: 20px;
     }
 
     .search-bar {
         margin-bottom: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
-    .search-bar select,
-    .search-bar input[type="text"],
-    .search-bar button {
+    .search-inputs {
+        display: flex;
+        align-items: center;
+        margin-right: 10px;
+    }
+
+    .search-inputs select,
+    .search-inputs input[type="text"] {
         margin-right: 10px;
         margin-bottom: 10px;
+        font-family: 'Kavoon', cursive;
+        font-size: 16px;
+        border: none;
+        padding: 10px;
+        border-radius: 20px;
+    }
+
+    .search-btn {
+        background-color: #FF6B6C;
+        color: #FFFFFF;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 20px;
+    }
+
+    .search-btn:hover {
+        background-color: #363448;
+    }
+    
+    .search-results {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between; /* Untuk mengatur jarak antara kartu-kartu */
     }
 
     .card {
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        padding: 15px;
+        flex-basis: calc(50% - 20px); /* Mengatur lebar kartu sehingga ada jarak 20px antara kartu-kartu */
+        width: 500px; /* Sesuaikan lebar card sesuai kebutuhan */
         margin-bottom: 20px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
-    .card img {
-        width: 100%;
-        height: auto;
+    .card-body {
+        display: flex;
+        padding: 20px;
+    }
+
+    #book-cover {
+        width: 180px;
+        height: 264px;
+        object-fit: cover;
+        margin-right: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .book-info {
+        flex: 1;
+    }
+
+    .card-title {
+        font-family: 'Kavoon', cursive;
+        font-size: 28px;
+        color: #45425A;
+        margin-bottom: 10px;
+    }
+
+    .author {
+        font-family: 'Indie Flower', cursive;
+        font-size: 20px;
+        color: #4CAF50; /* Warna teks */
+        margin-bottom: 5px;
+    }
+
+    .age-range {
+        font-family: 'Indie Flower', cursive;
+        font-size: 20px;
+        color: #4CAF50; /* Warna teks */
         margin-bottom: 10px;
     }
 
@@ -44,23 +141,34 @@
 
     .ratings i {
         color: #FBC634;
+        font-size: 24px;
+        margin-right: 5px;
+    }
+
+    /* Gaya hover untuk efek interaktif */
+    .card:hover {
+        transform: scale(1.02);
+        transition: transform 0.3s ease;
     }
 </style>
 
 <div class="container">
     <!-- Search bar and search results container -->
     <div class="search-bar">
-        <label for="category">Select Category:</label>
-        <select id="category">
-            <option value="age">Age</option>
-            <option value="title">Title</option>
-            <option value="author">Author</option>
-        </select>
-        <input type="text" id="search" placeholder="Enter Search Keyword">
-        <button onclick="performSearch()">Search</button>
+        <div class="search-inputs">
+            <label for="category">Select Category:</label>
+            <select id="category">
+                <option value="age">Age</option>
+                <option value="title">Title</option>
+                <option value="author">Author</option>
+            </select>
+            <input type="text" id="search" placeholder="Enter Search Keyword">
+        </div>
+        <button class="search-btn" onclick="performSearch()">Search</button>
     </div>
-    <div id="search-results" class="search-results"></div>
+    <div class="search-results" id="search-results"></div>
 </div>
+
 
 <script>
     var jQueryScript = document.createElement('script');
@@ -84,15 +192,18 @@
                 searchResults.forEach(function (book) {
                     var card = `
                     <div class="card">
-                        <img src="${book.image_url}" alt="${book.judul}">
-                        <h2>${book.judul}</h2>
-                        <p>Author: ${book.author}</p>
-                        <div class="ratings">
-                            ${generateRatingStars(book.rating)}
-                            <p>(${book.num_of_rating} ratings)</p>
+                        <div class="card-body">
+                            <img src="${book.image_url}" alt="${book.judul}" id="book-cover">
+                            <div class="book-info">
+                                <h2 class="card-title">${book.judul}</h2>
+                                <p class="author">Author ${book.author}</p>
+                                <p class="age-range">Age ${book.min_age} - ${book.max_age} years</p>
+                                <div class="ratings">
+                                    ${generateRatingStars(book.rating)}
+                                    <p>(${book.rating} ratings)</p>
+                                </div>
+                            </div>
                         </div>
-                        <p>Age Range: ${book.min_age} - ${book.max_age} years</p>
-                        <p>${book.desc}</p>
                     </div>`;
 
                     searchResultsContainer.innerHTML += card;
@@ -107,14 +218,14 @@
 
     function generateRatingStars(rating) {
         var stars = '';
-        for (var i = 0; i < 5; i++) {
-            if (i < rating) {
-                stars += '<i class="fas fa-star"></i>';
-            } else {
-                stars += '<i class="far fa-star"></i>';
-            }
+        for (var i = 0; i <= rating; i++) {
+            stars += '<i class="fas fa-star"></i>';
+        }
+        for (var j = rating; j <= 5; j++) {
+            stars += '<i class="far fa-star"></i>';
         }
         return stars;
     }
+
 </script>
 {% endblock content %}
