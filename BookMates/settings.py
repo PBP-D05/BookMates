@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'ChallengeLeaderboard',
     'Komunitas',
     'Dashboard',
+    'Komunitas',
     'LoginRegister',
     'SearchKatalog',
 ]
