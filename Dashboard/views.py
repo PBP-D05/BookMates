@@ -5,9 +5,11 @@ from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 from .models import Community, Pengguna
 from django.db.models.functions import Lower
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
+@login_required(login_url='/login')
 def show_main(request):
     community = list(Community.objects.filter(members=request.user.id).order_by('name'))
     pengguna = Pengguna.objects.get(user=request.user)
