@@ -4,6 +4,7 @@ from MengelolaBuku.models import Buku
 from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 
+from django.db.models import Q
 # Create your views here.
 
 @csrf_exempt
@@ -24,11 +25,15 @@ def perform_search(request):
                 if '-' in keyword:
                     # Lakukan pencarian berdasarkan rentang usia
                     min_age, max_age = map(int, keyword.split('-'))
+                    results = Buku.objects.filter(Q(min_age__gte=min_age) & Q(max_age__lte=max_age))
                 else:
-                    # Lakukan pencarian pada rentang yang terdapat umur 'keyword' di dalamnya
-                    min_age, max_age = int(keyword), 100
-                    
-                results = Buku.objects.filter(min_age__lte=max_age, max_age__gte=min_age)
+                    # Lakukan pencarian dengan rentang max < keyword
+                    min_age, max_age = 0, int(keyword)
+                    results = Buku.objects.filter(Q(max_age__lte=max_age))
+
+                print("KEY:", min_age, ' ', max_age)
+                for res in results:
+                    print(res.min_age, res.max_age, res.judul)
             elif category == 'title':
                 # Lakukan pencarian berdasarkan judul
                 results = Buku.objects.filter(judul__icontains=keyword)
