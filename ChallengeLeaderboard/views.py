@@ -10,7 +10,20 @@ from . import models
 from MengelolaBuku.models import Pengguna
 
 def leaderboard(request):
-    return render(request, 'leaderboard.html')
+
+    # TODO: CONFIGURE SET USER 
+    USER = 'root'
+    user = models.User.objects.get(username=USER)
+
+    komunitas_joined = []
+    for komunitas in models.Community.objects.all():
+        if user in komunitas.members.all():
+            komunitas_joined.append(komunitas)
+
+    context = {
+        'komunities' : komunitas_joined,
+    }
+    return render(request, 'leaderboard.html', context=context)
 
 @csrf_exempt
 def get_reply(request, challenge_name: str):
@@ -34,14 +47,14 @@ def post_nilai(request):
 
 
     user = models.User.objects.get(username=username)
-    print("USER", user)
+    # print("USER", user)
     pengguna = Pengguna.objects.get(user=user)
-    print("PENGGUNA", pengguna)
-    print("CHALLENGE_NAME", challenge_name)
+    # print("PENGGUNA", pengguna)
+    # print("CHALLENGE_NAME", challenge_name)
     reply = models.Challenge(name=challenge_name).reply
-    print("REPLY", reply)
+    # print("REPLY", reply)
     myReply = reply.get(user=user)
-    print("PENGGUNA", pengguna)
+    # print("PENGGUNA", pengguna)
 
     old_point = myReply.point
     myReply.point = new_point
