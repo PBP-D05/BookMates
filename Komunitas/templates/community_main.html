@@ -2,14 +2,35 @@
 
 {% block content %}
 <section class="vh-100" style="background-color: #FBDCE2;">
-    <div class="container py-5 h-200">
-      <div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="container py-5 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-200">
         <div class="col-12 col-md-8 col-lg-6 col-xl-5">
           <div class="card shadow-2-strong" style="border-radius: 1rem;">
             <div class="card-body p-5 text-center">
-  
-                
+                <div>
+                    <h1>Community</h1>
 
+                    <p>There are {{ count }} communities.</p>
+
+                    <br />
+
+                    <a href="{% url 'addInCommunity' %}">
+                        <button>
+                            Create a new community
+                        </button>
+                    </a>
+
+                    <ul>
+                        {% for community in community %}
+                            <li>
+                                <a href="{% url 'community_detail' community.join_code %}">{{ community.name }}</a>
+                            </li>
+                        {% empty %}
+                            <p>No communities available.</p>
+                        {% endfor %}
+                    </ul>
+
+                </div>
             </div>
           </div>
         </div>
@@ -18,29 +39,3 @@
   </section>
 
 {% endblock content %}
-
-
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Community</title>
-</head>
-<body>
-    <h1>Community</h1>
-    
-    <p>There are {{ count }} communities.</p>
-    
-    <ul>
-        {% for community in community %}
-            <li>
-                <a href="{% url 'community_detail' community.join_code %}">{{ community.name }}</a>
-            </li>
-        {% empty %}
-            <p>No communities available.</p>
-        {% endfor %}
-    </ul>
-    
-    <a href="{% url 'addInCommunity' %}">Create a new community</a>
-</body>
-</html>

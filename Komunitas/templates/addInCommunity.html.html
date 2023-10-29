@@ -19,17 +19,17 @@
                     <table>
                         <tr>
                             <td>Title: </td>
-                            <td><input type="text" name="username" placeholder="Username" class="form-control"></td>
+                            <td><input type="text" name="title" placeholder="Title" class="form-control"></td>
                         </tr>
                                 
                         <tr>
-                            <td>Password: </td>
-                            <td><input type="password" name="password" placeholder="Password" class="form-control"></td>
+                            <td>Description: </td>
+                            <td><input type="decription" name="description" placeholder="Description" class="form-control"></td>
                         </tr>
             
                         <tr>
                             <td></td>
-                            <td><input class="btn login_btn btn-primary" type="submit" value="Login"></td>
+                            <td><input class="btn login_btn btn-primary" type="submit" value="addInCommunity"></td>
                         </tr>
                     </table>
                 </form>
@@ -42,8 +42,6 @@
                     </ul>
                 {% endif %}     
                     
-                Don't have an account yet? <a href="{% url 'main:register' %}">Register Now</a>
-
             </div>
           </div>
         </div>
