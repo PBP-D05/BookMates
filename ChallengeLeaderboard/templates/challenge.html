@@ -20,9 +20,21 @@
                     (data) => data.json()
                 )
         }
-        async function on_jawaban_submit(){
-            fetch("{% url 'ChallengeLeaderboard:post_reply' name %}").then(
-                (data) => alert("Data Submitted")
+        async function on_jawaban_submit(event){
+            event.preventDefault();
+            const data = new FormData();
+            text = document.getElementById("reply_text_area").value
+            data.append('text', text)
+            data.append('challenge_name', "{{ name }}")
+
+            fetch("{% url 'ChallengeLeaderboard:post_reply'%}",{
+                method: 'POST',
+                body: data,
+            }).then(
+                (data) => {
+                    alert("Jawaban Telah Dikirim!")
+                    location.reload()
+                }
             )
         }
         {% comment %} COPIED FROM MengelolaBuku {% endcomment %}
@@ -92,27 +104,35 @@
         async function showReply(){
             data = await fetch_reply()
             text = document.getElementById("reply").innerHTML
-            {% if isguru %}
-                text += `<div class="m-4 p-3 rounded" style="background-color: #F8DCE2;">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h4>${data.user}</h4>
-                        <form class="form-floating">
-                            <input type="number" class="form-control" id="pointInput-${data.user}" value="${data.point}">
-                            <label for="pointInput">Nilai ${data.user}</label>
-                        </form>
-                    </div>
-                    <p>${data.text}</p>
-                </div>`
-            {% else %}
-                text += `<div class="m-4 p-3 rounded" style="background-color: #F8DCE2;">
-                    <h4>${data.user}</h4>
-                    <p>${data.text}</p>
-                </div>`
-            {% endif %}
-            document.getElementById("reply").innerHTML = text
-            document.getElementById(`pointInput-${data.user}`).addEventListener('change',
-                (value) => onNilaiChange(value.target.value, data.user, "{{name}}")
-            )
+            for(index in data){
+                {% if isguru %}
+                    text += `<div class="m-4 p-3 rounded" style="background-color: #F8DCE2;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4>${data[index].user}</h4>
+                            <form class="form-floating" action="javascript:void(0);">
+                                <input type="number" class="form-control" id="pointInput-${data[index].user}" value="${data[index].point}">
+                                <label for="pointInput">Nilai ${data[index].user}</label>
+                            </form>
+                        </div>
+                        <p>${data[index].text}</p>
+                    </div>`
+                {% else %}
+                    text += `<div class="m-4 p-3 rounded" style="background-color: #F8DCE2;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4>${data[index].user}</h4>
+                            <form class="form-floating" action="javascript:void(0);">
+                                <input type="number" class="form-control" id="pointInput-${data[index].user}" value="${data[index].point}" disabled>
+                                <label for="pointInput">Nilai ${data[index].user}</label>
+                            </form>
+                        </div>
+                        <p>${data[index].text}</p>
+                    </div>`
+                {% endif %}
+                document.getElementById("reply").innerHTML = text
+                document.getElementById(`pointInput-${data[index].user}`).addEventListener('change',
+                    (value) => onNilaiChange(value.target.value, data[index].user, "{{name}}")
+                )
+            }
         }
         window.onload = async function(e){ 
             showReply()
@@ -154,7 +174,7 @@
                     {% if showReply %}
                     <div class="m-4 p-3 rounded" style="background-color: #F8DCE2;">
                         <h4>Jawaban Kamu</h4>
-                        <form onsubmit="on_jawaban_submit(); return false;">
+                        <form onsubmit="on_jawaban_submit(event); return false;">
                             <div class="form-floating">
                                 <textarea class="form-control" placeholder="Leave a comment here" name="reply" id="reply_text_area"></textarea>
                                 <label for="floatingTextarea">Kamu belum mengirim jawaban...</label>

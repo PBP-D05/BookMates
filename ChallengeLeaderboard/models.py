@@ -12,7 +12,7 @@ class Reply(models.Model):
     point = models.IntegerField(default=0)
 
     def __str__(self) -> str:
-        return self.user.username + self.text
+        return self.user.username +" : "+ self.text
 
 class Challenge(models.Model):
     community = models.ForeignKey(Community, on_delete=models.CASCADE, null=False)
@@ -21,7 +21,7 @@ class Challenge(models.Model):
     deadline = models.DateTimeField()
     description = models.TextField()
     book = models.ForeignKey(Buku, on_delete=models.CASCADE)
-    reply = models.ManyToManyField(Reply)
+    reply = models.ManyToManyField(Reply, default=set, blank=True)
 
     def __str__(self) -> str:
         return self.name

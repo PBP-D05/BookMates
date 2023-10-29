@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound, HttpResponseBadRequest
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound, HttpResponseBadRequest, JsonResponse
 
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
@@ -9,11 +9,11 @@ import datetime
 from . import models
 from MengelolaBuku.models import Pengguna
 
-def leaderboard(request):
+USERNAME = 'root'
 
+def leaderboard(request):
     # TODO: CONFIGURE SET USER 
-    USER = 'root'
-    user = models.User.objects.get(username=USER)
+    user = models.User.objects.get(username=USERNAME)
 
     komunitas_joined = []
     for komunitas in models.Community.objects.all():
@@ -22,8 +22,42 @@ def leaderboard(request):
 
     context = {
         'komunities' : komunitas_joined,
+        'user' : user
     }
     return render(request, 'leaderboard.html', context=context)
+
+@csrf_exempt
+def get_rank(request, komunitas):
+    # TODO: CONFIGURE USERNAME
+    # username = request.user.username
+    username = USERNAME
+
+    komunitas = models.Community.objects.get(name=komunitas)
+    pengguna_all = [Pengguna.objects.get(user=user) for user in komunitas.members.all()]
+    pengguna_point = sorted([(pengguna, pengguna.point) for pengguna in pengguna_all], key=lambda x: x[1], reverse=True)
+    for position, (pengguna, point) in enumerate(pengguna_point):
+        if pengguna.user.username == username:
+            return JsonResponse({'position': position+1, 'name': username, 'point': point})
+    return JsonResponse({'position': '-', 'name': username, 'point': 0})
+
+@csrf_exempt
+def get_top10(request, komunitas):
+    komunitas = models.Community.objects.get(name=komunitas)
+    member_point = []
+    for member in komunitas.members.all():
+        pengguna = Pengguna.objects.get(user=member)
+        member_point.append((member, pengguna.point))
+    member_point = sorted(member_point, key=lambda x: x[1], reverse=True)
+    data = [{'name': member.username, 'point': point} for member, point in member_point]
+
+    return JsonResponse(data, safe=False)  # Use JsonResponse to return JSON data
+
+@csrf_exempt
+def get_teacher(request):
+    # TODO
+    komunitas_name = request.GET.get('komunitas')
+    komunitas = models.Community.objects.get(name=komunitas_name)
+    return HttpResponseNotFound("Page not Implemented")
 
 @csrf_exempt
 def get_reply(request, challenge_name: str):
@@ -33,9 +67,15 @@ def get_reply(request, challenge_name: str):
 
     dct = []
     for reply in challenge.reply.all():
-        dct.append(json.dumps({'user': reply.user.username, 'text': reply.text, 'datetime': reply.datetime.strftime("%B %d, %Y %H:%M"), 'point': reply.point}))
+        dct.append({
+            'user': reply.user.username,
+            'text': reply.text,
+            'datetime': reply.datetime.strftime("%B %d, %Y %H:%M"),
+            'point': reply.point
+        })
 
-    return HttpResponse(dct, content_type='application/json')
+    return JsonResponse(dct, safe=False)
+
 
 @csrf_exempt
 def post_nilai(request):
@@ -47,14 +87,9 @@ def post_nilai(request):
 
 
     user = models.User.objects.get(username=username)
-    # print("USER", user)
     pengguna = Pengguna.objects.get(user=user)
-    # print("PENGGUNA", pengguna)
-    # print("CHALLENGE_NAME", challenge_name)
     reply = models.Challenge(name=challenge_name).reply
-    # print("REPLY", reply)
     myReply = reply.get(user=user)
-    # print("PENGGUNA", pengguna)
 
     old_point = myReply.point
     myReply.point = new_point
@@ -67,34 +102,45 @@ def post_nilai(request):
     return HttpResponse(f"Old Point {old_point}, New Point {myReply.point}, Pengguna Point {pengguna.point}")
 
 @csrf_exempt
-def post_reply(request, challenge_name: str, text: str):
+def post_reply(request):
+    challenge_name = request.POST.get('challenge_name')
+    text = request.POST.get('text')
+    # TODO: CONFIGURE USERNAME
+    # user = request.user
+    user = models.User.objects.get(username=USERNAME)
+
+    print("DATA SUBMITTED : ", challenge_name, text)
+
     challenge: models.Challenge = _get_or_404(models.Challenge, name=challenge_name)
     if type(challenge) is HttpResponseNotFound:
         return challenge
     
-    challenge = challenge.reply.get_or_create(user=request.user)
-    challenge.text = text
-    challenge.save()
+    my_reply = None
+    for reply in challenge.reply.all():
+        if reply.user == user:
+            my_reply = reply
+            break
+
+    if my_reply is None:
+        reply = models.Reply.objects.create(user=user, text=text, datetime=datetime.datetime.now(), point=0)
+        challenge.reply.add(reply)
+    else:
+        my_reply.text = text
+        my_reply.save(update_fields=['text'])
     return HttpResponse("OK")
 
 def challenge(request, name: str):
-    if request.method == 'POST':
-        challenge_name = request.POST.get('challenge')
-        challenge = models.Challenge.objects.get(name=challenge_name)
-        challenge.reply += f"<CLS>{request.user.username}<SEP>{request.POST.reply}"
-        challenge.save(update_fields=['reply'])
-        return HttpResponseRedirect('ChallengeLeaderboard:challenge')
-    
     challenge: models.Challenge = _get_or_404(models.Challenge, name=name)
     if type(challenge) is HttpResponseNotFound:
         return challenge
     
     # TODO: CONFIGURE SET USER 
-    USER = 1
-    isreply = _get_or_404(challenge.reply, user=USER)
+    # request.user
+    user = models.User.objects.get(username=USERNAME)
+    isreply = _get_or_404(challenge.reply, user=user)
     isreply = None if type(isreply) is HttpResponseNotFound else isreply
 
-    isguru = Pengguna.objects.get(user=USER).isGuru
+    isguru = Pengguna.objects.get(user=user).isGuru
 
     context = dict(
         name = challenge.name,

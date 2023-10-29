@@ -17,7 +17,51 @@
 </head>
 <body>
     <script>
-        
+        async function onKomunitasChange(komunitas) {
+            if(komunitas == '--'){
+                document.getElementById("user_rank").innerHTML = '-'
+                document.getElementById("user_username").innerHTML = "{{user.username}}"
+                document.getElementById("user_point").innerHTML = '-'
+                document.getElementById("leaderboard table").innerHTML = ""
+                return;
+            }
+            fetch(`../get_top10/${komunitas}`).then(
+                (data) => data.json()
+            ).then(
+                (data) => {
+                    text = ""
+                    for(index in data){
+                        text += `<tr>
+                            <td class="px-4">${parseInt(index)+1}</td>
+                            <td class="px-4">${data[index].name}</td>
+                            <td class="text-end px-4">
+                                <img src="{% static "point.png" %}" width="3%">
+                                ${data[index].point}
+                            </td>
+                        </tr>`
+                        index += 1;
+                    }
+                    document.getElementById("leaderboard table").innerHTML = text
+                }
+            )
+
+            fetch(`../get_rank/${komunitas}`).then(
+                (data) => data.json()
+            ).then(
+                (data) => {
+                    document.getElementById("user_rank").innerHTML = data.position
+                    document.getElementById("user_username").innerHTML = data.name
+                    document.getElementById("user_point").innerHTML = data.point
+                }
+            )
+        }
+        window.onload = async function (e){
+            document.getElementById("komunitasSelect").onchange = function() {
+                var selectedValue = this.value;
+                onKomunitasChange(selectedValue);
+            };
+            
+        }
     </script>
     <div class="m-4 justify-content-center">
         <div class="container text-center my-4">
@@ -29,13 +73,13 @@
         </div>
         <div class="container align-items-center w-75" style="display: flex;">
             <div class="form-floating w-75">
-                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                <select class="form-select" id="komunitasSelect" aria-label="Floating label select example">
                     <option selected> -- </option>
                     {% for komunitas in komunities %}
-                        <option value="1">{{komunitas.name}}</option>
+                        <option value="{{komunitas.name}}">{{komunitas.name}}</option>
                     {% endfor %}
                 </select>
-                <label for="floatingSelect">Lihat Komunitas</label>
+                <label for="komunitasSelect">Lihat Komunitas</label>
             </div>
             <div class="form-floating w-25 ms-4">
                 <select class="form-select" id="guruSelected" aria-label="Floating label select example" disabled>
@@ -52,11 +96,11 @@
                 <thead></thead>
                 <tbody class="text-center">
                     <tr>
-                        <td class="px-4">1</td>
-                        <td class="px-4">John Doe</td>
+                        <td class="px-4" id="user_rank">-</td>
+                        <td class="px-4" id="user_username">{{user.username}}</td>
                         <td class="text-end px-4">
-                            <img src="{% static "point.png" %}" width="3%">
-                            200
+                            <img src="{% static "point.png" %}" width="4%">
+                            <span id="user_point">-</span>
                         </td>
                     </tr>
                 </tbody>
@@ -71,15 +115,7 @@
                 <div class="container align-items-center w-75 my-2">
                     <table class="table text-center align-items-center rounded-3 overflow-hidden">
                         <thead></thead>
-                        <tbody class="text-center">
-                            <tr>
-                                <td class="px-4">1</td>
-                                <td class="px-4">John Doe</td>
-                                <td class="text-end px-4">
-                                    <img src="{% static "point.png" %}" width="3%">
-                                    200
-                                </td>
-                            </tr>                
+                        <tbody class="text-center" id="leaderboard table">            
                         </tbody>
                     </table>
                 </div>
