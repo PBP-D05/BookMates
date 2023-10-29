@@ -6,25 +6,25 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.http import HttpResponseNotFound, HttpResponseRedirect
 from django.urls import reverse
-from .models import Pengguna
+from .models import UserProfile
 from django.http import HttpResponse
 from django.core import serializers
 
 # Create your views here.
 def show_xml(request):
-    data = Pengguna.objects.all()
+    data = UserProfile.objects.all()
     return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
 
 def show_json(request):
-    data = Pengguna.objects.all()
+    data = UserProfile.objects.all()
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 
 def show_xml_by_id(request, id):
-    data = Pengguna.objects.filter(pk=id)
+    data = UserProfile.objects.filter(pk=id)
     return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
 
 def show_json_by_id(request, id):
-    data = Pengguna.objects.filter(pk=id)
+    data = UserProfile.objects.filter(pk=id)
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 
 def show_home(request):
@@ -36,9 +36,8 @@ def user_register(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Your account has been successfully created!')
-            return redirect('LoginRegister:home')
+            return redirect('LoginRegister:show_home')
         else:
-            # Handle form errors
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f'{field}: {error}')

@@ -1,6 +1,7 @@
 from django import forms
-from LoginRegister.models import Pengguna
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User  # Import User model
+from .models import UserProfile
 
 class RegistrationForm(UserCreationForm):
     is_teacher = forms.BooleanField(
@@ -10,5 +11,13 @@ class RegistrationForm(UserCreationForm):
     )
 
     class Meta:
-        model = Pengguna
-        fields = ["username", "password1", "password2", "is_teacher"]
+        model = User  # Use the built-in User model
+        fields = ["username", "password1", "password2"]
+
+    def save(self, commit=True):
+        user = super(RegistrationForm, self).save(commit=False)
+        if commit:
+            user.save()
+        # Create a related Pengguna instance
+        UserProfile.objects.create(user=user, isGuru=self.cleaned_data['is_teacher'])
+        return user
