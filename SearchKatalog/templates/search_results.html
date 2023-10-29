@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .search-bar {
+        margin-bottom: 20px;
+    }
+
+    .search-bar select,
+    .search-bar input[type="text"],
+    .search-bar button {
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+
+    .card {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .card img {
+        width: 100%;
+        height: auto;
+        margin-bottom: 10px;
+    }
+
+    .ratings {
+        display: flex;
+        align-items: center;
+    }
+
+    .ratings i {
+        color: #FBC634;
+    }
+</style>
+
+<div class="container">
+    <!-- Search bar and search results container -->
+    <div class="search-bar">
+        <label for="category">Select Category:</label>
+        <select id="category">
+            <option value="age">Age</option>
+            <option value="title">Title</option>
+            <option value="author">Author</option>
+        </select>
+        <input type="text" id="search" placeholder="Enter Search Keyword">
+        <button onclick="performSearch()">Search</button>
+    </div>
+    <div id="search-results" class="search-results"></div>
+</div>
+
+<script>
+    function performSearch() {
+        var category = document.getElementById("category").value;
+        var keyword = document.getElementById("search").value;
+
+        // Kirim permintaan pencarian ke server menggunakan AJAX
+        $.get(`/perform_search/?category=${category}&keyword=${keyword}`, function (data) {
+            var searchResults = data.books;
+            var searchResultsContainer = document.getElementById("search-results");
+            searchResultsContainer.innerHTML = '';
+
+            if (searchResults.length === 0) {
+                // Tampilkan pesan jika tidak ada hasil pencarian
+                searchResultsContainer.innerHTML = '<p>No results found.</p>';
+            } else {
+                searchResults.forEach(function (book) {
+                    var card = `
+                    <div class="card">
+                        <img src="${book.image_url}" alt="${book.judul}">
+                        <h2>${book.judul}</h2>
+                        <p>Author: ${book.author}</p>
+                        <div class="ratings">
+                            ${generateRatingStars(book.rating)}
+                            <p>(${book.num_of_rating} ratings)</p>
+                        </div>
+                        <p>Age Range: ${book.min_age} - ${book.max_age} years</p>
+                        <p>${book.desc}</p>
+                    </div>`;
+
+                    searchResultsContainer.innerHTML += card;
+                });
+            }
+        }).fail(function() {
+            // Tampilkan pesan jika permintaan pencarian gagal
+            var searchResultsContainer = document.getElementById("search-results");
+            searchResultsContainer.innerHTML = '<p>Failed to retrieve search results. Please try again later.</p>';
+        });
+    }
+
+    function generateRatingStars(rating) {
+        var stars = '';
+        for (var i = 0; i < 5; i++) {
+            if (i < rating) {
+                stars += '<i class="fas fa-star"></i>';
+            } else {
+                stars += '<i class="far fa-star"></i>';
+            }
+        }
+        return stars;
+    }
+</script>
+{% endblock content %}
