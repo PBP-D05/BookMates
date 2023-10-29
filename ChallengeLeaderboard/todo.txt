@@ -1,0 +1,3 @@
+Fix guru give mark
+leaderboard using ajax
+add login_required

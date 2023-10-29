@@ -9,6 +9,7 @@ class Reply(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     text = models.TextField()
     datetime = models.DateTimeField()
+    point = models.IntegerField(default=0)
 
     def __str__(self) -> str:
         return self.user.username + self.text
@@ -19,8 +20,8 @@ class Challenge(models.Model):
     point = models.IntegerField()
     deadline = models.DateTimeField()
     description = models.TextField()
-    books = models.ForeignKey(Buku, on_delete=models.CASCADE)
-    reply = models.ManyToManyField(Reply) # encoded <CLS> NAME <SEP> REPLY <CLS>
+    book = models.ForeignKey(Buku, on_delete=models.CASCADE)
+    reply = models.ManyToManyField(Reply)
 
     def __str__(self) -> str:
         return self.name
