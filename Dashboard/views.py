@@ -9,12 +9,20 @@ from .models import Community, Pengguna
 
 def show_main(request):
     community = list(Community.objects.filter(members=request.user.id).order_by('name'))
+    pengguna = Pengguna.objects.get(user=request.user)
+    is_guru = pengguna.isGuru
     context = {
         'name': request.user,
         'community': community,
-        
+        'is_guru' : is_guru,
     }
     return render(request, "dashboard_user.html", context)
+
+def cek_guru(request):
+    if request.user.isGuru == True:
+        return True
+    else :
+        return False
 
 def get_community(request, order_by):
     if order_by == "ascending":

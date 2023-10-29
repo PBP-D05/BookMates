@@ -21,5 +21,5 @@ urlpatterns = [
     path('editbuku/', include('MengelolaBuku.urls')),
     path('', include('ChallengeLeaderboard.urls')),
     path('',include('Dashboard.urls')),
-    path('',include('Komunitas.urls'))
+    path('',include('Komunitas.urls')),
 ]
