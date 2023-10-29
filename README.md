@@ -8,7 +8,7 @@ Veronica Kylie - **2206029563** <br>
 ---
 
 # Aplikasi yang diajukan
-Kelompok kami berencana untuk mengembangkan sebuah aplikasi **inventori buku** untuk **anak-anak**. Aplikasi ini akan mencakup **katalog buku** yang **lengkap** serta fitur **komunitas** untuk meningkatkan motivasi anak untuk membaca. Dengan **desain yang cerah** dan **menarik** yang secara **khusus dirancang** untuk **anak-anak**, kami berharap aplikasi ini akan **meningkatkan minat membaca** di kalangan **anak-anak**, dengan tujuan akhir **meningkatkan tingkat literasi** di masyarakat Indonesia kedepannya.
+Kelompok kami berencana untuk mengembangkan sebuah aplikasi **inventori buku** untuk **anak-anak**. Aplikasi ini akan mencakup **katalog buku** yang **lengkap** serta fitur **komunitas** untuk meningkatkan motivasi anak untuk membaca. Pada komunitas ini, terdapat pengguna yang bisa memberikan **tantangan membaca** bagi anggota komunitas lainnya. Ketika menyelesaikan sebuah tantangan, pengguna akan **memperoleh poin** yang dapat dimanfaatkan untuk menaikkan peringkat *leaderboard*. Dengan **desain yang cerah** dan **menarik** yang secara **khusus dirancang** untuk **anak-anak**, kami berharap aplikasi ini akan **meningkatkan minat membaca** di kalangan **anak-anak**, dengan tujuan akhir **meningkatkan tingkat literasi** di masyarakat Indonesia kedepannya.
 
 # Manfaat Aplikasi:;/
 
