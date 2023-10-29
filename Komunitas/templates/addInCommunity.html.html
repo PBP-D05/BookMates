@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+    <title>Community</title>
+{% endblock meta %}
+
+{% block content %}
+<section class="vh-100" style="background-color: #FBDCE2;">
+    <div class="container py-5 h-200">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+          <div class="card shadow-2-strong" style="border-radius: 1rem;">
+            <div class="card-body p-5 text-center">
+  
+                <h1>Create New Community</h1>
+
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <table>
+                        <tr>
+                            <td>Title: </td>
+                            <td><input type="text" name="username" placeholder="Username" class="form-control"></td>
+                        </tr>
+                                
+                        <tr>
+                            <td>Password: </td>
+                            <td><input type="password" name="password" placeholder="Password" class="form-control"></td>
+                        </tr>
+            
+                        <tr>
+                            <td></td>
+                            <td><input class="btn login_btn btn-primary" type="submit" value="Login"></td>
+                        </tr>
+                    </table>
+                </form>
+            
+                {% if messages %}
+                    <ul>
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}     
+                    
+                Don't have an account yet? <a href="{% url 'main:register' %}">Register Now</a>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+{% endblock content %}
