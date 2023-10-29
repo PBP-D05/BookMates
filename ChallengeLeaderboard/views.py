@@ -66,11 +66,11 @@ def get_reply(request, challenge_name: str):
         return challenge
 
     dct = []
+    print('CHALLENGE', challenge, challenge.reply.all())
     for reply in challenge.reply.all():
         dct.append({
             'user': reply.user.username,
             'text': reply.text,
-            'datetime': reply.datetime.strftime("%B %d, %Y %H:%M"),
             'point': reply.point
         })
 
@@ -115,18 +115,20 @@ def post_reply(request):
     if type(challenge) is HttpResponseNotFound:
         return challenge
     
-    my_reply = None
-    for reply in challenge.reply.all():
-        if reply.user == user:
-            my_reply = reply
-            break
+    print('Halo halo')
+    my_reply, created = models.NewReply.objects.get_or_create(user=user, text=text, point= 0)
+    print('CREATED', created)
 
-    if my_reply is None:
-        reply = models.Reply.objects.create(user=user, text=text, datetime=datetime.datetime.now(), point=0)
-        challenge.reply.add(reply)
+    if created:
+        challenge.reply.add(my_reply)
     else:
         my_reply.text = text
         my_reply.save(update_fields=['text'])
+
+        if my_reply not in challenge.reply.all():
+            challenge.reply.add(my_reply)
+    
+
     return HttpResponse("OK")
 
 def challenge(request, name: str):
@@ -137,6 +139,7 @@ def challenge(request, name: str):
     # TODO: CONFIGURE SET USER 
     # request.user
     user = models.User.objects.get(username=USERNAME)
+    
     isreply = _get_or_404(challenge.reply, user=user)
     isreply = None if type(isreply) is HttpResponseNotFound else isreply
 

@@ -103,6 +103,7 @@
         }
         async function showReply(){
             data = await fetch_reply()
+            console.log(data)
             text = document.getElementById("reply").innerHTML
             for(index in data){
                 {% if isguru %}
