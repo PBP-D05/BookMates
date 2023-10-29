@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 from .models import Community, Pengguna
+from django.db.models.functions import Lower
 
 # Create your views here.
 
@@ -27,11 +28,11 @@ def cek_guru(request):
 def get_community(request, order_by):
     if order_by == "ascending":
         
-        community = list(Community.objects.filter(members=request.user.id).order_by('name'))
+        community = list(Community.objects.filter(members=request.user.id).order_by(Lower('name')))
         
         return community
     elif order_by == "descending":
-        community = list(Community.objects.filter(members=request.user.id).order_by('-name'))
+        community = list(Community.objects.filter(members=request.user.id).order_by(Lower('name').desc()))
         
         return community
     else:
