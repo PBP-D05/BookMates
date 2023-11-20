@@ -10,22 +10,23 @@ from .models import UserProfile
 from django.http import HttpResponse
 from django.core import serializers
 from Dashboard.views import show_main
+from MengelolaBuku.models import Pengguna
 
 # Create your views here.
 def show_xml(request):
-    data = UserProfile.objects.all()
+    data = Pengguna.objects.all()
     return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
 
 def show_json(request):
-    data = UserProfile.objects.all()
+    data = Pengguna.objects.all()
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 
 def show_xml_by_id(request, id):
-    data = UserProfile.objects.filter(pk=id)
+    data = Pengguna.objects.filter(pk=id)
     return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
 
 def show_json_by_id(request, id):
-    data = UserProfile.objects.filter(pk=id)
+    data = Pengguna.objects.filter(pk=id)
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 
 def show_home(request):
@@ -34,8 +35,10 @@ def show_home(request):
 def user_register(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
+        is_checked=False
         if form.is_valid():
-            form.save()
+            new_user = form.save()
+            Pengguna.objects.create(user=new_user)
             messages.success(request, 'Your account has been successfully created!')
             return redirect('LoginRegister:show_home')
         else:
@@ -50,12 +53,13 @@ def user_register(request):
 
 def user_login(request):
     if request.method == 'POST':
+        print('Welcome')
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            response = HttpResponseRedirect("Dashboard:show_main")
+            response = HttpResponseRedirect(reverse("Dashboard:show_main"))
             return response
         else:
             messages.info(request, 'Sorry, incorrect username or password. Please try again.')
