@@ -14,19 +14,19 @@ from MengelolaBuku.models import Pengguna
 
 # Create your views here.
 def show_xml(request):
-    data = UserProfile.objects.all()
+    data = Pengguna.objects.all()
     return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
 
 def show_json(request):
-    data = UserProfile.objects.all()
+    data = Pengguna.objects.all()
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 
 def show_xml_by_id(request, id):
-    data = UserProfile.objects.filter(pk=id)
+    data = Pengguna.objects.filter(pk=id)
     return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
 
 def show_json_by_id(request, id):
-    data = UserProfile.objects.filter(pk=id)
+    data = Pengguna.objects.filter(pk=id)
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 
 def show_home(request):

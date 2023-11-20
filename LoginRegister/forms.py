@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User  # Import User model
 from .models import UserProfile
+from MengelolaBuku.models import Pengguna
 
 class RegistrationForm(UserCreationForm):
     is_teacher = forms.BooleanField(
@@ -19,5 +20,5 @@ class RegistrationForm(UserCreationForm):
         if commit:
             user.save()
         # Create a related Pengguna instance
-        UserProfile.objects.create(user=user, isGuru=self.cleaned_data['is_teacher'])
+        Pengguna.objects.create(user=user, isGuru=self.cleaned_data['is_teacher'], point=0)
         return user
