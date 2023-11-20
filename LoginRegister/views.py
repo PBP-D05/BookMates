@@ -6,7 +6,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.http import HttpResponseNotFound, HttpResponseRedirect
 from django.urls import reverse
-from .models import UserProfile
 from django.http import HttpResponse
 from django.core import serializers
 from Dashboard.views import show_main
@@ -35,10 +34,11 @@ def show_home(request):
 def user_register(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
-        is_checked=False
+        isGuru = request.POST.get('isGuru')
         if form.is_valid():
             new_user = form.save()
-            Pengguna.objects.create(user=new_user)
+            isGuru = request.POST.get('isGuru') == 'on'
+            Pengguna.objects.create(user=new_user, isGuru=isGuru, point=0)
             messages.success(request, 'Your account has been successfully created!')
             return redirect('LoginRegister:show_home')
         else:
