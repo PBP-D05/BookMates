@@ -59,6 +59,13 @@ def user_login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+            # Create or get the Pengguna instance for the logged-in user
+            created = Pengguna.objects.get_or_create(user=user, defaults={'isGuru': False, 'point': 0})
+             # Additional logic if needed based on whether the instance was created or not
+            if created:
+                messages.success(request, 'Welcome! Your Pengguna instance has been created.')
+            else:
+                messages.success(request, 'Welcome back!')
             response = HttpResponseRedirect(reverse("Dashboard:show_main"))
             return response
         else:
