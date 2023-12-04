@@ -9,7 +9,7 @@ def show_book(request):
     if request.user.pengguna.isGuru == False:
         return redirect('dashboard:profile')
 
-    books = Buku.objects.filter(user=request.user)
+    books = Buku.objects.filter(user=Pengguna.objects.get(user=request.user))
     context = {
         books: books,
     }
@@ -29,7 +29,7 @@ def add_book(request):
         max_age = request.POST.get("max_age")
         image_url = request.POST.get("url_image")
         description = request.POST.get("description")
-        user = request.user
+        user = Pengguna.objects.get(user=request.user)
 
         new_product = Buku(judul=judul, author=author, rating=rating, 
                            num_of_rating=num_of_rating, min_age=min_age,
@@ -52,6 +52,6 @@ def remove_book(request, id):
         return redirect('Dashboard:show_main')
     
     book = Buku.objects.get(pk=id)
-    if (book.user == request.user):
+    if (book.user == Pengguna.objects.get(user=request.user)):
         book.delete()
     return redirect('MengelolaBuku:show_book')

@@ -11,6 +11,20 @@ from MengelolaBuku.models import Pengguna
 
 USERNAME = 'root'
 
+# NEW ENDPOINT 
+
+def get_ranking(request):
+    """
+        Nama, banyak yang direview, status, banyak bintang total
+    """
+
+def get_rating(request):
+    #TODO
+    pass
+
+
+########################
+
 def leaderboard(request):
     # TODO: CONFIGURE SET USER 
     user = models.User.objects.get(username=USERNAME)
