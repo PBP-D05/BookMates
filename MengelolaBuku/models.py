@@ -6,6 +6,8 @@ class Pengguna(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     isGuru = models.BooleanField()
     point = models.IntegerField(default=0)
+    banyak_review = models.IntegerField(default=0)
+    banyak_bintang = models.IntegerField(default=0)
 
 class Buku(models.Model):
     judul = models.CharField(max_length=100)

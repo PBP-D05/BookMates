@@ -14,6 +14,9 @@ from Komunitas.models import Community
 #     def __str__(self) -> str:
 #         return self.user.username +" : "+ self.text
 
+class Rating(models.Model):
+    #TODO
+    pass
 
 class NewReply(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
