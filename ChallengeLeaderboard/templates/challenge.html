@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+    <style>
+        body {
+            background-image: url({% static "challenge_background.png" %});
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        .rating-color{
+            color: #FBC634 !important;
+        }
+        .text{
+            font-family: 'Inter';
+            font-style: normal;
+        }
+        .title{
+            font-family: 'Kavoon';
+            font-style: normal;
+        }
+    </style>
+    <script>
+        async function fetch_reply(){
+            return fetch("{% url 'ChallengeLeaderboard:get_reply' name %}")
+                .then(
+                    (data) => data.json()
+                )
+        }
+        async function on_jawaban_submit(event){
+            event.preventDefault();
+            const data = new FormData();
+            text = document.getElementById("reply_text_area").value
+            data.append('text', text)
+            data.append('challenge_name', "{{ name }}")
+
+            fetch("{% url 'ChallengeLeaderboard:post_reply'%}",{
+                method: 'POST',
+                body: data,
+            }).then(
+                (data) => {
+                    alert("Jawaban Telah Dikirim!")
+                    location.reload()
+                }
+            )
+        }
+        async function getBooksId(objectId) {
+            return fetch(`../editbuku/get-books-json-id/${objectId}`).then((res) => res.json())
+        }
+        function hideModal(){
+            document.getElementById('detailModal').style.display = 'none';
+        }
+        async function showDetails(objectId){
+            document.getElementById("details-modal-body").innerHTML = ""
+            let htmlString = ""
+            var books = await getBooksId(objectId)
+            books = books[0]
+            var url_image = books.fields.image_url
+            htmlString += `
+            <table>    
+                <tr>
+                  <td rowspan="5"><img id="book-cover" src="${url_image}" alt="Book Cover"></td>
+                  <td colspan="2" id="title-wrapper"><h5 class="card-title">${books.fields.judul}</h5></td>
+                </tr>
+                <tr>
+                  <td><p class="card-text"><b>Author</b></p></td>
+                  <td><p class="card-text">${books.fields.author}</p></td>
+                </tr>
+                <tr>
+                  <td>
+                  <p class="card-text"><b>Age</b></p></td>
+                  <td><p class="card-text">${books.fields.min_age}-${books.fields.max_age} years</p></td>
+                </tr>
+                <tr>
+                    <td colspan="2><p class="card-text">${books.fields.desc}</p></td>
+                </tr>
+                <tr>
+                  <td colspan="2">  
+                  <div class="ratings d-flex">
+                    <p class="card-text">${books.fields.rating}</p>
+                    <i class="fa fa-star" style="color: #FBC634 !important;"></i>
+                    <p class="card-text" style="margin-left: 20px;">(${books.fields.num_of_rating})</p>
+                  </div>
+                  </td>
+                </tr>
+            </table>`
+            document.getElementById("details-modal-body").innerHTML = htmlString
+            document.getElementById('detailModal').style.display = "block";
+        }
+        async function onNilaiChange(new_value, user, challenge_name){
+            if (new_value < 0) {
+                new_value = 0
+                alert("Nilai Tidak Boleh Negatif!")
+            }else if(new_value > {{ point| safe }}){
+                new_value = {{ point| safe }}
+                alert("Nilai Melebihi Point Challenge Maksimal!")
+            }
+            const data = new FormData();
+            data.append('user', user);
+            data.append('value', new_value);
+            data.append('challenge_name', challenge_name);
+
+            document.getElementById(`pointInput-${user}`).value = new_value
+
+            fetch("{% url 'ChallengeLeaderboard:post_nilai' %}", {
+                method: 'POST',
+                body: data,
+            })
+        }
+        async function showReply(){
+            data = await fetch_reply()
+            text = document.getElementById("reply").innerHTML
+            for(index in data){
+                {% if isguru %}
+                    text += `<div class="m-4 p-3 rounded" style="background-color: #F8DCE2;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="title">${data[index].user}</h4>
+                            <form class="form-floating" action="javascript:void(0);">
+                                <input type="number" class="form-control title" id="pointInput-${data[index].user}" value="${data[index].point}">
+                                <label class="text" for="pointInput">Nilai ${data[index].user}</label>
+                            </form>
+                        </div>
+                        <p class="text">${data[index].text}</p>
+                    </div>`
+                {% else %}
+                    text += `<div class="m-4 p-3 rounded" style="background-color: #F8DCE2;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4>${data[index].user}</h4>
+                            <form class="form-floating" action="javascript:void(0);">
+                                <input type="number" class="form-control" id="pointInput-${data[index].user}" value="${data[index].point}" disabled>
+                                <label for="pointInput">Nilai ${data[index].user}</label>
+                            </form>
+                        </div>
+                        <p>${data[index].text}</p>
+                    </div>`
+                {% endif %}
+            }
+            document.getElementById("reply").innerHTML = text
+            for(index in data){
+                console.log(data[index].user)
+                document.getElementById(`pointInput-${data[index].user}`).addEventListener('change',
+                    (value) => onNilaiChange(value.target.value, data[index].user, "{{name}}")
+                )
+            }
+        }
+        window.onload = async function(e){ 
+            showReply()
+        }
+    </script>
+    <div class="py-5"/>
+    <div class="container">
+        <div class="d-flex">
+            <img src="{% static "task.png" %}" height="80" width="80">
+            <div class="container mx-2">
+                <h1 class="py-0 my-0 title"> {{name}} </h1>
+                <p class="py-0 my-0 text"> {{datetime}} ({{point}} point) </p>
+                <hr class="my-1 py-0" style="border: 3px solid black; border-radius: 5px;"/>
+                <p class="lh-1 text">{{description}}</p>
+                <div class="my-1 p-3 rounded" style="background-color: #FBDCE2;">
+                    <div class="d-flex">
+                        <img id="book-cover" src={{book.image_url}} alt="Book Cover" style="height:10%; width:10%;">
+                        <div class="mx-4">
+                            <h5 class="title">{{book.judul}}</h5>
+                            <p class="py-0 my-0 text">Author {{book.author}}</p>
+                            <p class="py-0 my-0 text">Age {{book.min_age}}-{{book.max_age}} years</p>
+                            <div class="ratings d-flex py-0 my-0">
+                                <p class="my-auto text">{{book.rating}}</p>
+                                <i class="fa fa-star rating-color my-auto"></i>
+                                <p class="text-center my-auto text">({{book.num_of_rating}})</p>
+                            </div>
+                                <button class="btn btn-primary details-btn text" id="details-button" onclick="showDetails({{book.pk}})">Details</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="rounded my-3 " style="background-color: #FF6B6C;">
+                <div class="mx-3 py-3 d-flex align-items-center">
+                    <img src="{% static "checklist.png" %}" height="70" width="70">
+                    <h1 class="text-center title">Pengumpulan</h1>
+                </div>
+                <div id="reply">
+                    {% if showReply %}
+                    <div class="m-4 p-3 rounded" style="background-color: #F8DCE2;">
+                        <h4>Jawaban Kamu</h4>
+                        <form onsubmit="on_jawaban_submit(event); return false;">
+                            <div class="form-floating">
+                                <textarea class="form-control" placeholder="Leave a comment here" name="reply" id="reply_text_area"></textarea>
+                                <label for="floatingTextarea">Kamu belum mengirim jawaban...</label>
+                            </div>
+                            <input class="form-control mt-3 btn btn-primary fw-bold" type="submit" value="Kirim Jawaban!">
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="py-3">
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" tabindex="-1" id="detailModal">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header" id="header-modal">
+              <h5 class="modal-title">Book Details</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="hideModal()"></button>
+            </div>
+            <div class="modal-body" id="details-modal-body">
+              <p>Modal body text goes here.</p>
+            </div>
+          </div>
+        </div>
+    </div>
+{% endblock content %}

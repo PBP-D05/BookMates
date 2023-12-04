@@ -1,118 +1,20 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
+{% block meta %}
+    <link rel="stylesheet" href="{% static 'css/show_book.css' %}">
+{% endblock meta %}
+
+{% block title %}Show Book{% endblock %}
+
 {% block content %}
-<style>
-body{
-    background: url('bg1.png');
-    background-size: cover;
-    background-color: #F3E8EA;
-    max-width: 1096px;
-}
-.wrapper-title{
-    margin: 30px;
-    width: 95%;
-    height: max-content;
-}
 
-#title{
-    font-family: 'Kavoon';
-    font-size: 40px;
-    font-weight: 400;
-    color: #45425A;
-    align-items: start;
-    max-width: 50%;
-}
-
-#add-book-button{
-    position: absolute;
-    right: 0;
-    margin-right: 20px;
-    background-color: #45425A;
-    font-family: 'Kavoon';
-    font-weight: 400;
-    font-size: 16px;
-    color: #FFFFFF;
-    border-color: #45425A;
-}
-
-#wrapper-card{
-    margin-top: 30px;
-    max-width: 2000px;
-    align-items: center;
-
-}
-
-.card{
-    float: left;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    margin-left: 40px;
-    margin-right: 5px;
-    padding: 20px;
-    
-}
-
-.card-text{
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 20px;
-    line-height: 19px;
-    color: #000000;
-    display: flex;
-    margin-left: 50px;
-}
-
-.card-title{
-    display: flex;
-    font-family: 'Kavoon';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 28px;
-    line-height: 29px;
-    color: #45425A;
-    margin-left: 50px;
-}
-
-
-
-#book-cover{
-    width: 180px;
-    height: 264px;
-}
-.ratings{
-    margin-right:10px;
-}
-
-.ratings i{
-    color:#D9D9D9;
-    font-size:20px;
-}
-
-.rating-color{
-    color: #FBC634 !important;
-}
-
-.remove-btn{
-    background-color: transparent;
-    border: none;
-}
-
-.edit-btn{
-    background-color: #45425A;
-    font-family: 'Kavoon';
-    font-weight: 300;
-    font-size: 20px;
-    color: #FFFFFF;
-    margin-left: 50px;
-    width: 106px;
-}
-</style>
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header" id="header-modal">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Add Book</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -121,45 +23,70 @@ body{
                     {% csrf_token %}
                     <div class="mb-3">
                       <label for="judul" class="col-form-label">Book Title</label>
-                      <input type="text" class="form-control" id="judul" name="judul"></input>
+                      <input type="text" class="form-control" id="judul" name="judul" required></input>
                     </div>
                     <div class="mb-3">
                       <label for="author" class="col-form-label">Book Author</label>
-                      <input type="text" class="form-control" id="author" name="author"></input>
+                      <input type="text" class="form-control" id="author" name="author" required></input>
                     </div>
                     <div class="mb-3">
                       <label for="age" class="col-form-label">Recommended Age</label>
-                      <input type="number" class="form-control" id="min_age" name="min_age" min="1" max="13" placeholder="from"></input>
-                      <input type="number" class="form-control" id="max_age" name="max_age" min="1" max="13" placeholder="until"></input>
+                      <input type="number" class="form-control" id="min_age" name="min_age" min="1" max="13" placeholder="from" required></input>
+                      <input type="number" class="form-control" id="max_age" name="max_age" min="1" max="13" placeholder="until" required></input>
                     </div>
                     <label for="customRange3" class="form-label">Rating</label>
-                    <input type="range" class="form-range" min="0" max="5" step="0.5" id="customRange3" value="3" oninput="updateValueDisplay()">
+                    <input type="range" class="form-range" min="0" max="5" step="0.5" id="customRange3" value="3" oninput="updateValueDisplay()" required>
                     <label id="range-value-text">3</label>
                     <div class="mb-3">
+                        <label for="edit-num-rating" class="col-form-label">Reviewed by</label>
+                        <input type="number" class="form-control" id="edit-num-rating" name="edit-min-age" min="0" max="1000" placeholder="how many peopla left comment here?" required></input>
+                    </div>
+                    <div class="mb-3">
+                      <label for="url_image" class="col-form-label">Book Cover Image URL</label>
+                      <textarea class="form-control" id="url_image" name="url_image" required></textarea>
+                    </div>
+                    <div class="mb-3">
                         <label for="description" class="col-form-label">Synopsis</label>
-                        <textarea class="form-control" id="description" name="description"></textarea>
+                        <textarea class="form-control" id="description" name="description" required></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="button_add" data-bs-dismiss="modal">Add Product</button>
             </div>
         </div>
     </div>
 </div>
 
-    <div class="wrapper-title">
-        <h1 id="title">My Books</h1>
-        <button id="add-book-button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Add New Book</button>
+<div class="modal" tabindex="-1" id="detailModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header" id="header-modal">
+          <h5 class="modal-title">Book Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="hideModal()"></button>
+        </div>
+        <div class="modal-body" id="details-modal-body">
+          <p>Modal body text goes here.</p>
+        </div>
+      </div>
     </div>
-    <br>
-    <div id="wrapper-card"></div>
+</div>
+
+<div class="wrapper-title">
+    <h1 id="title">My Books</h1>
+    <button id="add-book-button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Add New Book</button>
+</div>
+<br>
+<div id="wrapper-card" class="row row-cols-2 g-4"></div>
 
 
 <script>
     async function getBooks() {
         return fetch("{% url 'MengelolaBuku:get_books_json' %}").then((res) => res.json())
+    }
+
+    async function getBooksId(objectId) {
+        return fetch(`get-books-json-id/${objectId}`).then((res) => res.json())
     }
 
     async function refreshBooks() {
@@ -169,9 +96,8 @@ body{
         products.forEach((books) => {
             var book_rating = Math.round(books.fields.rating)
             var rating_kosong = 5 - book_rating
-            //var url_image = "https://marketplace.canva.com/EAFfV74NxCg/1/0/1003w/canva-colorful-blue-illustration-beach-children%27s-book-cover-eTSt5e-cETQ.jpg"
             var url_image = books.fields.image_url
-            htmlString += `<div id="book-card" class="card" style="width: 35rem;">
+            htmlString += `<div id="book-card" class="card col">
             <div class="card-body">
             <table>    
             <tr>
@@ -179,28 +105,25 @@ body{
               <td colspan="2" id="title-wrapper"><h5 class="card-title">${books.fields.judul}</h5></td>
             </tr>
             <tr>
-              <td colspan="2"><p class="card-text">Author      ${books.fields.author}</p></td>
+              <td colspan="2"><p class="card-text">Author:      ${books.fields.author}</p></td>
             </tr>
             <tr>
-              <td colspan="2">
-              <p class="card-text">Age         ${books.fields.min_age}-${books.fields.max_age} years</p>
+              <td colspan="2">       
+                ${books.fields.max_age !== 99 ? `<p class="card-text">Age: ${books.fields.min_age}-${books.fields.max_age} years</p>` : `<p class="card-text">Age:         ${books.fields.min_age}+ years</p>`}
               </td>
             </tr>
             <tr>
               <td colspan="2">  
-              <div class="ratings">
-                {% for star in rating %}
-                    <i class="fa fa-star rating-color"></i>
-                {% endfor %}
-                {% for star in rating_kosong %}
-                    <i class="fa fa-star"></i>
-                {% endfor %}
+              <div class="ratings d-flex">
+                <p class="card-text">${books.fields.rating}</p>
+                <i class="fa fa-star rating-color"></i>
+                <p class="card-text" style="margin-left: 20px;">(${books.fields.num_of_rating})</p>
               </div>
               </td>
             </tr>  
             <tr>
-            <td><a href="edit-book/{{item.pk}}/"><button class="btn btn-primary edit-btn">Edit</button></a></td>
-            <td><a href="remove_all/{{item.pk}}/"><button class="btn remove-btn">🗑️</button></a></td>
+            <td><button class="btn btn-primary details-btn" id="details-button" onclick="showDetails(${books.pk})">Details</button></td>
+            <td><a href="remove_book/{{item.pk}}/"><button class="btn remove-btn">🗑️</button></a></td>
             </tr>
             </table>
             </div>
@@ -223,10 +146,58 @@ body{
     }
     document.getElementById("button_add").onclick = addBook
 
+    async function showDetails(objectId){
+        document.getElementById("details-modal-body").innerHTML = ""
+        let htmlString = ""
+        var books = await getBooksId(objectId)
+        books = books[0]
+        console.log(books)
+        var url_image = books.fields.image_url
+        htmlString += `
+        <table>    
+            <tr>
+              <td rowspan="5"><img id="book-cover" src="${url_image}" alt="Book Cover"></td>
+              <td colspan="2" id="title-wrapper"><h5 class="card-title" style="margin-bottom: 10px;">${books.fields.judul}</h5></td>
+            </tr>
+            <tr>
+              <td><p class="card-text" style="margin-bottom: 10px;"><b>Author</b></p></td>
+              <td><p class="card-text" style="margin-bottom: 10px;">${books.fields.author}</p></td>
+            </tr>
+            <tr>
+              <td>
+              <p class="card-text" style="margin-bottom: 10px;"><b>Age</b></p></td>
+              <td>
+                ${books.fields.max_age !== 99 ? `<p class="card-text" style="margin-bottom: 10px;">${books.fields.min_age}-${books.fields.max_age} years</p>` : `<p class="card-text" style="margin-bottom: 10px;">${books.fields.min_age}+ years</p>`}
+              </td>
+            </tr>
+            <tr>
+                <td colspan="2"><p class="card-text" style="margin-bottom: 10px;">${books.fields.desc}</p></td>
+            </tr>
+            <tr>
+              <td colspan="2">  
+              <div class="ratings d-flex">
+                <p class="card-text">${books.fields.rating}</p>
+                <i class="fa fa-star rating-color"></i>
+                <p class="card-text" style="margin-left: 20px;">(${books.fields.num_of_rating})</p>
+              </div>
+              </td>
+            </tr>
+        </table>`
+        document.getElementById("details-modal-body").innerHTML = htmlString
+        document.getElementById('detailModal').style.display = "block";
+
+    }
+
+    function hideModal(){
+        document.getElementById('detailModal').style.display = 'none';
+    }
+
     function updateValueDisplay() {
         var rangeInput = document.getElementById('customRange3');
         document.getElementById('range-value-text').textContent = rangeInput.value;
     }
+
+    
 </script>
 
 {% endblock content %}

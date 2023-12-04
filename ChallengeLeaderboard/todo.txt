@@ -1,0 +1,2 @@
+leaderboard using ajax
+add login_required

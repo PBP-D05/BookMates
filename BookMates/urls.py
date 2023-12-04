@@ -15,8 +15,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+<<<<<<< HEAD
 
+=======
+from LoginRegister import views
+>>>>>>> bc870955ba334c4cbb605f2dbec8ae1b48ff941c
 urlpatterns = [
+    path('', include('LoginRegister.urls')),
+    path('', views.show_home, name='home'),
     path('admin/', admin.site.urls),
     path('editbuku/', include('MengelolaBuku.urls')),
+<<<<<<< HEAD
+=======
+    path('searchbuku/', include('SearchKatalog.urls')),
+    path('challenge/', include('ChallengeLeaderboard.urls')),
+    path('',include('Dashboard.urls')),
+    path('',include('Komunitas.urls')),
+>>>>>>> bc870955ba334c4cbb605f2dbec8ae1b48ff941c
 ]
