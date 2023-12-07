@@ -6,10 +6,16 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import Community, Pengguna
 from django.db.models.functions import Lower
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+from django.http import JsonResponse
+from MengelolaBuku.models import Buku
+
+
+from django.db.models import Q
 
 # Create your views here.
 
-@login_required(login_url='/login')
+#@login_required(login_url='/login')
 def show_main(request):
     community = list(Community.objects.filter(members=request.user.id).order_by('name'))
     pengguna = Pengguna.objects.get(user=request.user)
@@ -40,7 +46,7 @@ def get_community(request, order_by):
     else:
         return []
 
-@csrf_exempt
+
 def sort_ajax(request):
     order_by = ""
     if request.method == 'POST':
@@ -59,3 +65,28 @@ def sort_ajax(request):
         return HttpResponse(serializers.serialize('json', sorted_community), content_type="application/json")
     else:
         return HttpResponseNotFound('Community not found')
+
+def get_books_json(request):
+    buku_item = Buku.objects.all()
+    return HttpResponse(serializers.serialize('json', buku_item))
+
+def perform_search(request):
+    
+    results = Buku.objects.all()
+    
+    # Ubah hasil pencarian ke dalam format yang sesuai untuk ditampilkan di halaman
+    books = []
+    for book in results:
+        books.append({
+            'judul': book.judul,
+            'author': book.author,
+            'rating': book.rating,
+            'num_of_rating': book.num_of_rating,
+            'min_age': book.min_age,
+            'max_age': book.max_age,
+            'image_url': book.image_url if book.image_url else '',  # URL gambar jika ada, kosongkan jika tidak
+            'desc': book.desc,
+        })
+        
+    return JsonResponse({'books': books})
+    

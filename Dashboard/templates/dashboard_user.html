@@ -66,48 +66,219 @@
     </div>
 </div>
 
+<style>
+    body {
+        background: url('bg1.png');
+        background-size: cover;
+        background-color: #F3E8EA;
+        max-width: 1096px;
+        margin: 0 auto;
+        font-family: 'Inter', sans-serif;
+        color: #000000;
+    }
 
+    label[for="category"] {
+        font-family: 'Indie Flower', cursive; /* Mengubah font family */
+        font-size: 18px; /* Mengubah ukuran font */
+        color: #d85252; /* Mengubah warna teks */
+        margin-right: 10px; /* Menambah margin kanan agar terpisah dari elemen berikutnya */
+    }
+
+    .wrapper-title {
+        margin: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #title {
+        font-family: 'Kavoon', cursive;
+        font-size: 40px;
+        font-weight: 400;
+        color: #45425A;
+        max-width: 50%;
+    }
+
+    .container {
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .search-bar {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .search-inputs {
+        display: flex;
+        align-items: center;
+        margin-right: 10px;
+    }
+
+    .search-inputs select,
+    .search-inputs input[type="text"] {
+        margin-right: 10px;
+        margin-bottom: 10px;
+        font-family: 'Kavoon', cursive;
+        font-size: 16px;
+        border: none;
+        padding: 10px;
+        border-radius: 20px;
+    }
+
+    .search-btn {
+        background-color: #FF6B6C;
+        color: #FFFFFF;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 20px;
+    }
+
+    .search-btn:hover {
+        background-color: #363448;
+    }
+    
+    .search-results {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between; /* Untuk mengatur jarak antara kartu-kartu */
+    }
+
+    .card {
+        flex-basis: calc(50% - 20px); /* Mengatur lebar kartu sehingga ada jarak 20px antara kartu-kartu */
+        width: 500px; /* Sesuaikan lebar card sesuai kebutuhan */
+        margin-bottom: 20px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-body {
+        display: flex;
+        padding: 20px;
+    }
+
+    #book-cover {
+        width: 180px;
+        height: 264px;
+        object-fit: cover;
+        margin-right: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .book-info {
+        flex: 1;
+    }
+
+    .card-title {
+        font-family: 'Kavoon', cursive;
+        font-size: 28px;
+        color: #45425A;
+        margin-bottom: 10px;
+    }
+
+    .author {
+        font-family: 'Indie Flower', cursive;
+        font-size: 20px;
+        color: #4CAF50; /* Warna teks */
+        margin-bottom: 5px;
+    }
+
+    .age-range {
+        font-family: 'Indie Flower', cursive;
+        font-size: 20px;
+        color: #4CAF50; /* Warna teks */
+        margin-bottom: 10px;
+    }
+
+    .ratings {
+        display: flex;
+        align-items: center;
+    }
+
+    .ratings i {
+        color: #FBC634;
+        font-size: 24px;
+        margin-right: 5px;
+    }
+
+    /* Gaya hover untuk efek interaktif */
+    .card:hover {
+        transform: scale(1.02);
+        transition: transform 0.3s ease;
+    }
+</style>
+
+<div class="container">
+    <div class="search-bar">
+        <!-- <div class="search-inputs">
+            Remove the category selection 
+            <input type="text" id="search" placeholder="Enter Search Keyword">
+        </div> -->
+        <!-- Remove the "Search" button -->
+    </div>
+    <div class="search-results" id="search-results"></div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 <script>
-    async function handleSubmit(){
-        console.log("clicked")
-        const form = document.querySelector('#sort');
-        const selectedValue = document.getElementById('inputGroupSelected04').value;
-        console.log(selectedValue)
-        let order_by;
+    function loadAllBooks() {
+        // Send a request to retrieve all books from the server using AJAX
+        $.get(`../perform_search/`, function (data) {
+            var allBooks = data.books;
+            var searchResultsContainer = document.getElementById("search-results");
+            searchResultsContainer.innerHTML = '';
 
-        if (selectedValue === '1'){
-            order_by = 'ascending';
-        } else if (selectedValue === '2'){
-            order_by = 'descending';
-        }
-        const namePk = '{{ name.pk }}';
-        const result = await fetch(`/sortajax/`, {method: 'POST', body: new FormData(form)});
+            if (allBooks.length === 0) {
+                searchResultsContainer.innerHTML = '<p>No books found.</p>';
+            } else {
+                allBooks.forEach(function (book) {
+                    var card = `
+                    <div class="card">
+                        <div class="card-body">
+                            <img src="${book.image_url}" alt="${book.judul}" id="book-cover">
+                            <div class="book-info">
+                                <h2 class="card-title">${book.judul}</h2>
+                                <p class="author">Author ${book.author}</p>
+                                <p class="age-range">Age ${book.min_age} - ${book.max_age} years</p>
+                                <div class="ratings">
+                                    ${generateRatingStars(book.rating)}
+                                    <p>(${book.rating} ratings)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
 
- 
-        const sorted = await result.json();
-
-        let htmlString = "";
-        console.log(sorted)
-        sorted.forEach((community) => {
-            htmlString += `<div class="col-md-3 mb-3">
-        <div class="card" style="border-radius: 10px; z-index: -1; background-color: #FF6B6C;">
-            <div class="card-body">
-                <div class="r1" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <h5 class="card-title" style="font-size: 20px; font-family: 'Kavoon';">${community.fields.name}</h5>
-                    <a href="#" style="text-decoration: none; color: #45425A">
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    </a>
-                    
-                </div>
-            </div>
-        </div>
-
-    </div>`;
+                    searchResultsContainer.innerHTML += card;
+                });
+            }
+        }).fail(function () {
+            var searchResultsContainer = document.getElementById("search-results");
+            searchResultsContainer.innerHTML = '<p>Failed to retrieve books. Please try again later.</p>';
         });
-        
-    document.getElementById("kartukomunitas").innerHTML=htmlString;
     }
-    document.getElementById("button_submit").onclick = handleSubmit
+
+    function generateRatingStars(rating) {
+        var stars = '';
+        for (var i = 0; i <= rating; i++) {
+            stars += '<i class="fas fa-star"></i>';
+        }
+        for (var j = rating; j <= 5; j++) {
+            stars += '<i class="far fa-star"></i>';
+        }
+        return stars;
+    }
+
+    // Load all books when the page loads
+    $(document).ready(function () {
+        loadAllBooks();
+    });
 </script>
+
 {% endblock %}
