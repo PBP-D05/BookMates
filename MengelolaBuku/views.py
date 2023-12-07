@@ -6,8 +6,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 def show_book(request):
-    if Pengguna.objects.get(user=request.user).isGuru == False:
-        return redirect('Dashboard:show_main')
+    if request.user.pengguna.isGuru == False:
+        return redirect('dashboard:profile')
 
     books = Buku.objects.filter(user=Pengguna.objects.get(user=request.user))
     context = {
@@ -17,8 +17,8 @@ def show_book(request):
 
 @csrf_exempt
 def add_book(request):
-    if Pengguna.objects.get(user=request.user).isGuru == False:
-        return redirect('Dashboard:show_main')
+    if request.user.pengguna.isGuru == False:
+        return redirect('dashboard:profile')
     
     if request.method == 'POST':
         judul = request.POST.get("judul")
