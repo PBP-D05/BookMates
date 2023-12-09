@@ -99,3 +99,7 @@ def show_book_flutter(request):
 
     books = Buku.objects.filter(user=Pengguna.objects.get(user=request.user))
     return HttpResponse(serializers.serialize('json', books))
+
+def get_pengguna_json(request):
+    pengguna_objek = Pengguna.objects.all()
+    return HttpResponse(serializers.serialize('json', pengguna_objek))
