@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="vh-100" style="background-color: #508bfc;">
+    <div class="container py-5 h-100"> 
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                <div class="card shadow-2-strong" style="border-radius: 1rem;">
+                    <div class="card-body p-5 text-center">
+                        <div>
+                            <h1>Leaderboard</h1>
+                        
+                            <table class="table text-center align-items-center rounded-3 overflow-hidden">
+                                <thead>
+                                    <tr>
+                                        <th>User</th>
+                                        <th>Points</th>
+                                        <th>Is Guru</th>
+                                        <th>Banyak Review</th>
+                                        <th>Banyak Bintang</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for entry in leaderboard_entries %}
+                                        <tr>
+                                            <td>{{ entry.user }}</td>
+                                            <td>{{ entry.points }}</td>
+                                            <td>{{ entry.is_guru }}</td>
+                                            <td>{{ entry.banyak_review }}</td>
+                                            <td>{{ entry.banyak_bintang }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>  
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}
