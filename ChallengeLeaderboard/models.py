@@ -18,7 +18,7 @@ class Reviews(models.Model):
     buku = models.ForeignKey(Buku, on_delete=models.CASCADE, null=False)
     user = models.ForeignKey(Pengguna, on_delete=models.CASCADE, null=False)
     text = models.TextField()
-    rating = models.IntegerField()
+    rating = models.FloatField()
 
 class NewReply(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

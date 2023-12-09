@@ -68,7 +68,7 @@ def sort_ajax(request):
 
 def get_books_json(request):
     buku_item = Buku.objects.all()
-    return HttpResponse(serializers.serialize('json', buku_item))
+    return HttpResponse(serializers.serialize("json", buku_item), content_type="application/json")
 
 def perform_search(request):
     
