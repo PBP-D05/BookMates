@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'SearchKatalog',
     'authentication',
     'corsheaders',
+    'ReviewerLeaderboard'
 ]
 
 MIDDLEWARE = [
