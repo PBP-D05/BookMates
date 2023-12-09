@@ -110,7 +110,6 @@
         }
         async function showReply(){
             data = await fetch_reply()
-            console.log(data)
             text = document.getElementById("reply").innerHTML
             for(index in data){
                 {% if isguru %}
@@ -136,7 +135,10 @@
                         <p>${data[index].text}</p>
                     </div>`
                 {% endif %}
-                document.getElementById("reply").innerHTML = text
+            }
+            document.getElementById("reply").innerHTML = text
+            for(index in data){
+                console.log(data[index].user)
                 document.getElementById(`pointInput-${data[index].user}`).addEventListener('change',
                     (value) => onNilaiChange(value.target.value, data[index].user, "{{name}}")
                 )

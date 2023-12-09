@@ -1,6 +1,6 @@
 from django.db import models
 
-from MengelolaBuku.models import Buku
+from MengelolaBuku.models import Buku, Pengguna
 from django.contrib.auth.models import User
 
 from Komunitas.models import Community
@@ -14,6 +14,11 @@ from Komunitas.models import Community
 #     def __str__(self) -> str:
 #         return self.user.username +" : "+ self.text
 
+class Reviews(models.Model):
+    buku = models.ForeignKey(Buku, on_delete=models.CASCADE, null=False)
+    user = models.ForeignKey(Pengguna, on_delete=models.CASCADE, null=False)
+    text = models.TextField()
+    rating = models.FloatField()
 
 class NewReply(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

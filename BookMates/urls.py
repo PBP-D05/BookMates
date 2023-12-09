@@ -26,4 +26,5 @@ urlpatterns = [
     path('',include('Dashboard.urls')),
     path('',include('Komunitas.urls')),
     path('leaderboard/', include('ReviewerLeaderboard.urls')),
+    path('auth/', include('authentication.urls')),
 ]
