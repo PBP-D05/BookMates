@@ -7,9 +7,47 @@ import json
 import datetime
 
 from . import models
-from MengelolaBuku.models import Pengguna
+from MengelolaBuku.models import Pengguna, Buku
 
 USERNAME = 'root'
+
+# NEW ENDPOINT 
+def get_ranking(request):
+    """
+        Return JSON list contains Nama, banyak yang direview, status, banyak bintang total
+    """
+    all_pengguna = Pengguna.objects.all()
+    return HttpResponse(serializers.serialize('json', all_pengguna), content_type='application/json')
+
+
+def get_reviews(request, book_pk:str):
+    """
+        Return JSON list of reviews
+    """
+    buku = Buku.objects.get(pk=book_pk)
+    all_reviews = models.Reviews.objects.filter(buku=buku)
+    return HttpResponse(serializers.serialize('json', all_reviews), content_type='application/json')
+
+def post_reviews(request):
+    """
+        Body:
+            name: name of a book
+            text: review's  text
+            rating: int [1, 5] of rating
+    """
+    try:
+        name = request.POST.get('name')
+        text = request.POST.get('text')
+        rating = request.POST.get('rating')
+        user = request.user
+
+        buku = Buku.objects.get(judul=name)
+        new_review = models.Reviews.objects.create(buku=buku, user=user, text=text, rating=rating).save()
+        return JsonResponse({'status': 'ok'})
+    except ValueError as e:
+        return JsonResponse({'status': 'error'})
+
+########################
 
 def leaderboard(request):
     # TODO: CONFIGURE SET USER 
