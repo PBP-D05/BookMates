@@ -38,7 +38,7 @@ def user_register(request):
         if form.is_valid():
             new_user = form.save()
             isGuru = request.POST.get('isGuru') == 'on'
-            Pengguna.objects.create(user=new_user, isGuru=isGuru, point=0)
+            Pengguna.objects.create(user=new_user, isGuru=isGuru, point=0).save()
             messages.success(request, 'Your account has been successfully created!')
             return redirect('LoginRegister:show_home')
         else:
