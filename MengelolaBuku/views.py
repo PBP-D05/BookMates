@@ -4,6 +4,7 @@ from .models import Buku, Pengguna
 from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 import json
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def show_book(request):
@@ -42,11 +43,11 @@ def add_book(request):
 
 def get_books_json(request):
     buku_item = Buku.objects.all()
-    return HttpResponse(serializers.serialize('json', buku_item))
+    return HttpResponse(serializers.serialize('json', buku_item), content_type="application/json")
 
 def get_books_json_id(request, id):
     buku_item = Buku.objects.filter(pk=id)
-    return HttpResponse(serializers.serialize('json', buku_item))
+    return HttpResponse(serializers.serialize('json', buku_item), content_type="application/json")
 
 def remove_book(request, id):
     if Pengguna.objects.get(user=request.user).isGuru == False:
@@ -73,7 +74,7 @@ def add_book_flutter(request):
             min_age = data["min_age"],
             max_age = data["max_age"],
             image_url = data["image_url"],
-            description = data["description"],
+            desc = data["description"],
             user = Pengguna.objects.get(user=request.user)
         )
 
@@ -83,6 +84,7 @@ def add_book_flutter(request):
     else:
         return JsonResponse({"status": "error"}, status=401)
 
+@csrf_exempt
 def remove_book_flutter(request):
     if Pengguna.objects.get(user=request.user).isGuru == False:
         return JsonResponse({"status": "error"}, status=403)
@@ -93,13 +95,14 @@ def remove_book_flutter(request):
         book.delete()
     return JsonResponse({"status": "success"}, status=200)
 
+@csrf_exempt
 def show_book_flutter(request):
     if Pengguna.objects.get(user=request.user).isGuru == False:
         return JsonResponse({"status": "error"}, status=403)
 
     books = Buku.objects.filter(user=Pengguna.objects.get(user=request.user))
-    return HttpResponse(serializers.serialize('json', books))
+    return JsonResponse(serializers.serialize('json', books), safe=False)
 
 def get_pengguna_json(request):
     pengguna_objek = Pengguna.objects.all()
-    return HttpResponse(serializers.serialize('json', pengguna_objek))
+    return HttpResponse(serializers.serialize('json', pengguna_objek), content_type="application/json")
