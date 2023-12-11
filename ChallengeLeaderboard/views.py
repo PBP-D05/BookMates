@@ -17,35 +17,38 @@ def get_ranking(request):
         Return JSON list contains Nama, banyak yang direview, status, banyak bintang total
     """
     all_pengguna = Pengguna.objects.all()
-    return HttpResponse(serializers.serialize('json', all_pengguna), content_type='application/json')
+    return JsonResponse(serializers.serialize('json', all_pengguna), safe=False)
 
-
+@csrf_exempt
 def get_reviews(request, book_pk:str):
     """
         Return JSON list of reviews
     """
     buku = Buku.objects.get(pk=book_pk)
     all_reviews = models.Reviews.objects.filter(buku=buku)
-    return HttpResponse(serializers.serialize('json', all_reviews), content_type='application/json')
+    return JsonResponse(serializers.serialize('json', all_reviews), safe=False)
 
+@csrf_exempt
 def post_reviews(request):
     """
         Body:
-            name: name of a book
+            pk: pk a book
             text: review's  text
             rating: int [1, 5] of rating
     """
     try:
-        name = request.POST.get('name')
+        print(request.method)
+        print(request.POST)
+        pk = int(request.POST.get('pk'))
         text = request.POST.get('text')
-        rating = request.POST.get('rating')
+        rating = float(request.POST.get('rating'))
         user = request.user
 
-        buku = Buku.objects.get(judul=name)
+        buku = Buku.objects.get(pk=pk)
         new_review = models.Reviews.objects.create(buku=buku, user=user, text=text, rating=rating).save()
-        return JsonResponse({'status': 'ok'})
+        return JsonResponse({'status': 'ok'}, status=200)
     except ValueError as e:
-        return JsonResponse({'status': 'error'})
+        return JsonResponse({'status': 'error'}, status=401)
 
 ########################
 
