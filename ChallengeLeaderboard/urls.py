@@ -8,6 +8,7 @@ urlpatterns = [
     path('leaderboard/', views.leaderboard, name='leaderboard'),
     path('ranking/', views.get_ranking, name='get_ranking'),
     path('reviews/<str:book_pk>', views.get_reviews, name='get_reviews'),
+    path('post_reviews', views.post_reviews, name='post_reviews'),
     path('get_reply/<str:challenge_name>', views.get_reply, name='get_reply'),
     path('post_reply/', views.post_reply, name='post_reply'),
     path('post_nilai/', views.post_nilai, name='post_nilai'),
