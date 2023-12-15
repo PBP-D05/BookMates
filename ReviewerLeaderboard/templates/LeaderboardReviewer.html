@@ -12,7 +12,26 @@
                             <h1>Leaderboard</h1>
                         
                             <table class="table text-center align-items-center rounded-3 overflow-hidden">
-
+                                <thead>
+                                    <tr>
+                                        <th>User</th>
+                                        <th>Points</th>
+                                        <th>Is Guru</th>
+                                        <th>Banyak Review</th>
+                                        <th>Banyak Bintang</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for entry in leaderboard_entries %}
+                                        <tr>
+                                            <td>{{ entry.user }}</td>
+                                            <td>{{ entry.points }}</td>
+                                            <td>{{ entry.is_guru }}</td>
+                                            <td>{{ entry.banyak_review }}</td>
+                                            <td>{{ entry.banyak_bintang }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
                             </table>
                         </div>
                     </div>  
