@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import Pengguna
+from django.core import serializers
 
 @csrf_exempt
 def register(request):
@@ -80,3 +81,11 @@ def logout(request):
             "status": False,
             "message": "Logout gagal."
         }, status=401)
+
+
+@login_required
+@csrf_exempt
+def leaderboard(request):
+    # Return JSON list contains Nama, banyak yang direview, status, banyak bintang total
+    all_pengguna = Pengguna.objects.all()
+    return JsonResponse(serializers.serialize('json', all_pengguna), safe=False)
