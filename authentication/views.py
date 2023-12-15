@@ -27,7 +27,7 @@ def register(request):
     user.save()
 
     # Create a new Pengguna instance and associate it with the user
-    Pengguna.objects.create(user=user, isGuru=is_teacher, point=0, banyakReview=0, banyakBintang=0).save()
+    Pengguna.objects.create(user=user, isGuru=is_teacher, point=0, banyak_review=0, banyak_bintang=0).save()
     
     return JsonResponse({"username": user.username, "status": True, "message": "Register successful!"}, status=201)
 
@@ -46,8 +46,8 @@ def login(request):
                 "username": user.username,
                 "is_teacher": pengguna.isGuru,
                 "point": pengguna.point,
-                "banyakReview": pengguna.banyakReview,
-                "banyakBintang" : pengguna.banyakBintang,
+                "banyakReview": pengguna.banyak_review,
+                "banyakBintang" : pengguna.banyak_bintang,
                 "status": True,
                 "message": "Login sukses!"
             }, status=200)
