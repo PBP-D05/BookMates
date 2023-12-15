@@ -4,6 +4,8 @@ from . import views
 app_name = 'ChallengeLeaderboard'
 
 urlpatterns = [
+    path('get_username/<int:pk>', views.get_username, name='get_username'),
+    path('get_current_username/', views.get_current_username, name='get_username'),
     path('challenge/<str:name>', views.challenge, name='challenge'),
     path('leaderboard/', views.leaderboard, name='leaderboard'),
     path('ranking/', views.get_ranking, name='get_ranking'),

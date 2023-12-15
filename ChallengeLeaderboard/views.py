@@ -7,9 +7,19 @@ import json
 import datetime
 
 from . import models
-from MengelolaBuku.models import Pengguna, Buku
+from MengelolaBuku.models import Pengguna, Buku, User
 
 USERNAME = 'root'
+
+@csrf_exempt
+def get_username(request, pk: int):
+    user = Pengguna.objects.get(pk=pk)
+    return JsonResponse(json.dumps({'username': user.user.username}), safe=False, status=200)
+
+@csrf_exempt
+def get_current_username(request):
+    user = request.user
+    return JsonResponse(json.dumps({'username': user.username}), safe=False, status=200)
 
 # NEW ENDPOINT 
 def get_ranking(request):
@@ -37,17 +47,22 @@ def post_reviews(request):
             rating: int [1, 5] of rating
     """
     try:
-        print(request.method)
-        print(request.POST)
-        pk = int(request.POST.get('pk'))
-        text = request.POST.get('text')
-        rating = float(request.POST.get('rating'))
-        user = request.user
+        data = json.loads(request.body)
+
+        pk = int(data['pk'])
+        text = data['text']
+        rating = float(data['rating'])
+        user = Pengguna.objects.get(user=request.user)
 
         buku = Buku.objects.get(pk=pk)
         new_review = models.Reviews.objects.create(buku=buku, user=user, text=text, rating=rating).save()
+
+        user.banyak_bintang += rating
+        user.banyak_review += 1
+        user.save(update_fields=['banyak_bintang', 'banyak_review'])
         return JsonResponse({'status': 'ok'}, status=200)
     except ValueError as e:
+        print(e)
         return JsonResponse({'status': 'error'}, status=401)
 
 ########################
