@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.http import JsonResponse
 from MengelolaBuku.models import Buku
+from django.contrib.auth.models import User
 
 
 from django.db.models import Q
@@ -90,3 +91,16 @@ def perform_search(request):
         
     return JsonResponse({'books': books})
     
+
+@csrf_exempt
+def update_user_name (request):
+    if request.method == 'POST':
+        usernameBaru = request.POST.get('name')
+        id = request.POST.get('id') 
+        user = User.objects.get(pk=id)
+        
+        user.username = usernameBaru
+        user.save()
+        return JsonResponse({"status": True, "message": "Username berhasil diubah!","username":user.username}, status=201)
+    
+    return JsonResponse({"status": False, "message": "Username gagal diubah!"}, status=400)

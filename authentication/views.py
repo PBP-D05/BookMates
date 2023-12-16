@@ -16,8 +16,10 @@ from .models import Pengguna
 def register(request):
     username = request.POST.get('username')
     password = request.POST.get('password')
-    is_teacher = True if request.POST.get('is_teacher') else False  # Assuming is_teacher is sent from Flutter
-
+    is_teacher = False
+    if request.POST.get('is_teacher') == "true":
+        is_teacher = True
+       
     # Check if the username already exists
     if User.objects.filter(username=username).exists():
         return JsonResponse({"status": False, "message": "Username sudah digunakan."}, status=400)
@@ -29,7 +31,7 @@ def register(request):
     # Create a new Pengguna instance and associate it with the user
     Pengguna.objects.create(user=user, isGuru=is_teacher, point=0, banyak_review=0, banyak_bintang=0).save()
     
-    return JsonResponse({"username": user.username, "status": True, "message": "Register successful!"}, status=201)
+    return JsonResponse({"username": user.username, "status": True, "message": "Register successful!", "is_teacher": is_teacher}, status=201)
 
 @csrf_exempt
 def login(request):
@@ -44,6 +46,7 @@ def login(request):
             pengguna = Pengguna.objects.get(user=user)
             return JsonResponse({
                 "username": user.username,
+                "id": user.id,
                 "is_teacher": pengguna.isGuru,
                 "point": pengguna.point,
                 "banyakReview": pengguna.banyak_review,
