@@ -34,8 +34,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-CSRF_TRUSTED_ORIGINS = ["https://booksmate-d05-tk.pbp.cs.ui.ac.id/"]
-
+CSRF_TRUSTED_ORIGINS = ["https://booksmate-d05-tk.pbp.cs.ui.ac.id"]
 
 # Application definition
 
@@ -54,7 +53,8 @@ INSTALLED_APPS = [
     'SearchKatalog',
     'authentication',
     'corsheaders',
-    'ReviewerLeaderboard'
+    'ReviewerLeaderboard',
+    # 'book'
 ]
 
 MIDDLEWARE = [
