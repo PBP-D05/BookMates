@@ -10,8 +10,8 @@ class Pengguna(models.Model):
     banyak_bintang = models.IntegerField(default=0)
 
 class Buku(models.Model):
-    judul = models.CharField(max_length=100)
-    author = models.CharField(max_length=50)
+    judul = models.CharField(max_length=500)
+    author = models.CharField(max_length=500)
     rating = models.FloatField()
     num_of_rating = models.IntegerField()
     min_age = models.IntegerField()
