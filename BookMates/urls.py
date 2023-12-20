@@ -27,4 +27,5 @@ urlpatterns = [
     path('',include('Komunitas.urls')),
     path('leaderboard/', include('ReviewerLeaderboard.urls')),
     path('auth/', include('authentication.urls')),
+    # path('api/books/', include("book.urls"))
 ]

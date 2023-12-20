@@ -18,4 +18,4 @@ class Buku(models.Model):
     max_age = models.IntegerField()
     image_url = models.TextField()
     desc = models.TextField()
-    user = models.ForeignKey(Pengguna, on_delete=models.CASCADE)
+    user = models.ForeignKey(Pengguna, on_delete=models.CASCADE, blank=True, null=True)
